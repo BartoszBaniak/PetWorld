@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: petworld-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: petworld123
+      MYSQL_DATABASE: PetWorldDb
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - petworld-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppetworld123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  petworld-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: petworld-app
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=PetWorldDb;User=root;Password=petworld123;
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - petworld-network
+
+volumes:
+  mysql_data:
+
+networks:
+  petworld-network:
+    driver: bridge

@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "dgSpecHash": "PTsoNYg1P88=",
+  "success": true,
+  "projectFilePath": "c:\\c#\\PetWorld\\PetWorld.Application\\PetWorld.Application.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Bartosz\\.nuget\\packages\\microsoft.agents.ai\\1.0.0-preview.260128.1\\microsoft.agents.ai.1.0.0-preview.260128.1.nupkg.sha512",
+    "C:\\Users\\Bartosz\\.nuget\\packages\\microsoft.agents.ai.abstractions\\1.0.0-preview.260128.1\\microsoft.agents.ai.abstractions.1.0.0-preview.260128.1.nupkg.sha512",
+    "C:\\Users\\Bartosz\\.nuget\\packages\\microsoft.agents.ai.openai\\1.0.0-preview.260128.1\\microsoft.agents.ai.openai.1.0.0-preview.260128.1.nupkg.sha512",
+    "C:\\Users\\Bartosz\\.nuget\\packages\\microsoft.extensions.ai\\10.2.0\\microsoft.extensions.ai.10.2.0.nupkg.sha512",
+    "C:\\Users\\Bartosz\\.nuget\\packages\\microsoft.extensions.ai.abstractions\\10.2.0\\microsoft.extensions.ai.abstractions.10.2.0.nupkg.sha512",
+    "C:\\Users\\Bartosz\\.nuget\\packages\\microsoft.extensions.ai.openai\\10.2.0-preview.1.26063.2\\microsoft.extensions.ai.openai.10.2.0-preview.1.26063.2.nupkg.sha512",
+    "C:\\Users\\Bartosz\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\10.0.2\\microsoft.extensions.caching.abstractions.10.0.2.nupkg.sha512",
+    "C:\\Users\\Bartosz\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.2\\microsoft.extensions.dependencyinjection.abstractions.10.0.2.nupkg.sha512",
+    "C:\\Users\\Bartosz\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\10.0.2\\microsoft.extensions.logging.abstractions.10.0.2.nupkg.sha512",
+    "C:\\Users\\Bartosz\\.nuget\\packages\\microsoft.extensions.primitives\\10.0.2\\microsoft.extensions.primitives.10.0.2.nupkg.sha512",
+    "C:\\Users\\Bartosz\\.nuget\\packages\\microsoft.extensions.vectordata.abstractions\\9.7.0\\microsoft.extensions.vectordata.abstractions.9.7.0.nupkg.sha512",
+    "C:\\Users\\Bartosz\\.nuget\\packages\\openai\\2.8.0\\openai.2.8.0.nupkg.sha512",
+    "C:\\Users\\Bartosz\\.nuget\\packages\\system.clientmodel\\1.8.1\\system.clientmodel.1.8.1.nupkg.sha512",
+    "C:\\Users\\Bartosz\\.nuget\\packages\\system.memory.data\\8.0.1\\system.memory.data.8.0.1.nupkg.sha512",
+    "C:\\Users\\Bartosz\\.nuget\\packages\\system.numerics.tensors\\10.0.2\\system.numerics.tensors.10.0.2.nupkg.sha512"
+  ],
+  "logs": []
+}
