@@ -1,173 +1,535 @@
 @page "/chat"
+@page "/"
 @using PetWorld.Application.Interfaces
 @using PetWorld.Application.DTOs
 @inject IWriterCriticService WriterCriticService
 @inject IChatHistoryService ChatHistoryService
 @rendermode InteractiveServer
 
-<PageTitle>Czat z Klientem - PetWorld</PageTitle>
+<PageTitle>Czat - PetWorld</PageTitle>
 
-<h3>Czat z Klientem</h3>
-
-<div class="chat-container">
-    <div class="chat-input-section">
-        <div class="mb-3">
-            <label for="questionInput" class="form-label">Pytanie:</label>
-            <textarea class="form-control" id="questionInput" rows="3" @bind="currentQuestion" placeholder="Wpisz swoje pytanie o produkty dla zwierząt..."></textarea>
+<div class="chat-page">
+    <div class="chat-header">
+        <div class="chat-header-avatar">
+            <span>🤖</span>
         </div>
-        <button class="btn btn-primary" @onclick="SendQuestion" disabled="@isProcessing">
-            @if (isProcessing)
-            {
-                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                <span>Przetwarzanie...</span>
-            }
-            else
-            {
-                <span>Wyślij</span>
-            }
-        </button>
+        <div class="chat-header-info">
+            <h4>PetWorld AI Assistant</h4>
+            <span class="status">@(isProcessing ? "Pisze..." : "Online")</span>
+        </div>
     </div>
 
-    @if (currentResponse != null)
-    {
-        <div class="response-section mt-4">
-            <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Odpowiedź (Liczba iteracji: @currentResponse.IterationCount)</h5>
-                </div>
-                <div class="card-body">
-                    <p class="card-text" style="white-space: pre-wrap;">@currentResponse.FinalAnswer</p>
-
-                    @if (currentResponse.RecommendedProducts.Any())
-                    {
-                        <hr />
-                        <h6>Polecane produkty:</h6>
-                        <ul>
-                            @foreach (var product in currentResponse.RecommendedProducts)
-                            {
-                                <li>@product</li>
-                            }
-                        </ul>
-                    }
+    <div class="chat-messages" @ref="chatMessagesDiv">
+        @if (!messages.Any())
+        {
+            <div class="welcome-message">
+                <div class="welcome-icon">🐾</div>
+                <h3>Witaj w PetWorld!</h3>
+                <p>Jestem Twoim asystentem AI. Pomogę Ci znaleźć idealne produkty dla Twojego pupila.</p>
+                <div class="suggestions">
+                    <button class="suggestion-chip" @onclick='() => SendSuggestion("Jaka karma dla dorosłego psa?")'>
+                        🐕 Karma dla psa
+                    </button>
+                    <button class="suggestion-chip" @onclick='() => SendSuggestion("Potrzebuję zabawki dla kota")'>
+                        🐈 Zabawki dla kota
+                    </button>
+                    <button class="suggestion-chip" @onclick='() => SendSuggestion("Akcesoria do akwarium")'>
+                        🐠 Akwarystyka
+                    </button>
                 </div>
             </div>
+        }
 
-            @if (showIterationDetails)
-            {
-                <div class="mt-3">
-                    <button class="btn btn-sm btn-outline-secondary" @onclick="() => showIterationDetails = false">
-                        Ukryj szczegóły iteracji
-                    </button>
-                    <div class="mt-2">
-                        @foreach (var iteration in currentResponse.Iterations)
-                        {
-                            <div class="card mb-2">
-                                <div class="card-header @(iteration.CriticApproved ? "bg-success" : "bg-warning") text-white">
-                                    <strong>Iteracja @iteration.IterationNumber</strong> - @(iteration.CriticApproved ? "Zaakceptowano" : "Odrzucono")
-                                </div>
-                                <div class="card-body">
-                                    <p><strong>Odpowiedź Writera:</strong></p>
-                                    <p style="white-space: pre-wrap;">@iteration.WriterResponse</p>
-                                    @if (!string.IsNullOrEmpty(iteration.CriticFeedback))
-                                    {
-                                        <p class="mt-2"><strong>Feedback Krytyka:</strong> @iteration.CriticFeedback</p>
-                                    }
-                                </div>
+        @foreach (var msg in messages)
+        {
+            <div class="message-wrapper @(msg.IsUser ? "user" : "assistant")">
+                @if (!msg.IsUser)
+                {
+                    <div class="message-avatar">🤖</div>
+                }
+                <div class="message-bubble @(msg.IsUser ? "user-bubble" : "assistant-bubble")">
+                    <div class="message-content">@((MarkupString)FormatMessage(msg.Content))</div>
+                    @if (msg.IterationCount > 0)
+                    {
+                        <div class="message-meta">
+                            <span class="iteration-badge" title="Liczba iteracji Writer-Critic">
+                                🔄 @msg.IterationCount iteracji
+                            </span>
+                        </div>
+                    }
+                    @if (msg.Products.Any())
+                    {
+                        <div class="products-section">
+                            <div class="products-label">Polecane produkty:</div>
+                            <div class="products-list">
+                                @foreach (var product in msg.Products)
+                                {
+                                    <span class="product-tag">@product</span>
+                                }
                             </div>
-                        }
+                        </div>
+                    }
+                </div>
+                @if (msg.IsUser)
+                {
+                    <div class="message-avatar user-avatar">👤</div>
+                }
+            </div>
+        }
+
+        @if (isProcessing)
+        {
+            <div class="message-wrapper assistant">
+                <div class="message-avatar">🤖</div>
+                <div class="message-bubble assistant-bubble typing">
+                    <div class="typing-indicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
                     </div>
                 </div>
-            }
-            else
-            {
-                <div class="mt-2">
-                    <button class="btn btn-sm btn-outline-secondary" @onclick="() => showIterationDetails = true">
-                        Pokaż szczegóły iteracji
-                    </button>
-                </div>
-            }
-        </div>
-    }
+            </div>
+        }
+    </div>
 
-    @if (!string.IsNullOrEmpty(errorMessage))
-    {
-        <div class="alert alert-danger mt-3" role="alert">
-            @errorMessage
+    <div class="chat-input-area">
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="error-toast">
+                <span>⚠️ @errorMessage</span>
+                <button @onclick="() => errorMessage = string.Empty">×</button>
+            </div>
+        }
+        <div class="input-container">
+            <textarea
+                @bind="currentQuestion"
+                @bind:event="oninput"
+                @onkeydown="HandleKeyDown"
+                placeholder="Napisz wiadomość..."
+                rows="1"
+                disabled="@isProcessing"></textarea>
+            <button class="send-button" @onclick="SendQuestion" disabled="@(isProcessing || string.IsNullOrWhiteSpace(currentQuestion))">
+                @if (isProcessing)
+                {
+                    <span class="spinner"></span>
+                }
+                else
+                {
+                    <span>➤</span>
+                }
+            </button>
         </div>
-    }
+    </div>
 </div>
 
 @code {
+    private ElementReference chatMessagesDiv;
     private string currentQuestion = string.Empty;
-    private WriterCriticResponse? currentResponse;
     private bool isProcessing = false;
-    private bool showIterationDetails = false;
     private string errorMessage = string.Empty;
+    private List<ChatMessage> messages = new();
+
+    private class ChatMessage
+    {
+        public string Content { get; set; } = string.Empty;
+        public bool IsUser { get; set; }
+        public int IterationCount { get; set; }
+        public List<string> Products { get; set; } = new();
+        public DateTime Timestamp { get; set; } = DateTime.Now;
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !e.ShiftKey)
+        {
+            await SendQuestion();
+        }
+    }
+
+    private async Task SendSuggestion(string suggestion)
+    {
+        currentQuestion = suggestion;
+        await SendQuestion();
+    }
 
     private async Task SendQuestion()
     {
-        if (string.IsNullOrWhiteSpace(currentQuestion))
-        {
-            errorMessage = "Proszę wpisać pytanie.";
+        if (string.IsNullOrWhiteSpace(currentQuestion) || isProcessing)
             return;
-        }
+
+        var question = currentQuestion.Trim();
+        currentQuestion = string.Empty;
+
+        messages.Add(new ChatMessage
+        {
+            Content = question,
+            IsUser = true
+        });
 
         isProcessing = true;
         errorMessage = string.Empty;
-        currentResponse = null;
-        showIterationDetails = false;
+        StateHasChanged();
 
         try
         {
-            currentResponse = await WriterCriticService.ProcessQuestionAsync(currentQuestion);
+            var response = await WriterCriticService.ProcessQuestionAsync(question);
+
+            messages.Add(new ChatMessage
+            {
+                Content = response.FinalAnswer,
+                IsUser = false,
+                IterationCount = response.IterationCount,
+                Products = response.RecommendedProducts
+            });
 
             // Save to history
             var chatHistoryDto = new ChatHistoryDto
             {
                 Data = DateTime.UtcNow,
-                Pytanie = currentQuestion,
-                Odpowiedz = currentResponse.FinalAnswer,
-                LiczbaIteracji = currentResponse.IterationCount,
-                RecommendedProducts = string.Join(", ", currentResponse.RecommendedProducts)
+                Pytanie = question,
+                Odpowiedz = response.FinalAnswer,
+                LiczbaIteracji = response.IterationCount,
+                RecommendedProducts = string.Join(", ", response.RecommendedProducts)
             };
 
             await ChatHistoryService.SaveChatHistoryAsync(chatHistoryDto);
         }
         catch (Exception ex)
         {
-            errorMessage = $"Wystąpił błąd: {ex.Message}";
+            errorMessage = ex.Message;
         }
         finally
         {
             isProcessing = false;
+            StateHasChanged();
         }
+    }
+
+    private string FormatMessage(string content)
+    {
+        if (string.IsNullOrEmpty(content))
+            return content;
+
+        return System.Web.HttpUtility.HtmlEncode(content)
+            .Replace("\n", "<br>")
+            .Replace("POLECANE PRODUKTY:", "<strong>Polecane produkty:</strong>");
     }
 }
 
 <style>
-    .chat-container {
-        max-width: 900px;
-        margin: 0 auto;
+    .chat-page {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background: #f0f2f5;
     }
 
-    .chat-input-section {
-        background-color: #f8f9fa;
+    .chat-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 20px;
+        background: white;
+        border-bottom: 1px solid #e4e6eb;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .chat-header-avatar {
+        width: 44px;
+        height: 44px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+    }
+
+    .chat-header-info h4 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: #1c1e21;
+    }
+
+    .chat-header-info .status {
+        font-size: 13px;
+        color: #65676b;
+    }
+
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
         padding: 20px;
-        border-radius: 8px;
-        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
     }
 
-    .response-section {
-        animation: fadeIn 0.5s;
+    .welcome-message {
+        text-align: center;
+        padding: 60px 20px;
+        color: #65676b;
     }
 
-    @@keyframes fadeIn {
-        from {
-            opacity: 0;
+    .welcome-icon {
+        font-size: 64px;
+        margin-bottom: 16px;
+    }
+
+    .welcome-message h3 {
+        color: #1c1e21;
+        margin-bottom: 8px;
+    }
+
+    .welcome-message p {
+        max-width: 400px;
+        margin: 0 auto 24px;
+    }
+
+    .suggestions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+    }
+
+    .suggestion-chip {
+        background: white;
+        border: 1px solid #e4e6eb;
+        border-radius: 20px;
+        padding: 8px 16px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .suggestion-chip:hover {
+        background: #f0f2f5;
+        border-color: #667eea;
+        color: #667eea;
+    }
+
+    .message-wrapper {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        max-width: 80%;
+    }
+
+    .message-wrapper.user {
+        align-self: flex-end;
+        flex-direction: row;
+    }
+
+    .message-wrapper.assistant {
+        align-self: flex-start;
+    }
+
+    .message-avatar {
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+
+    .message-avatar.user-avatar {
+        background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+    }
+
+    .message-bubble {
+        padding: 12px 16px;
+        border-radius: 18px;
+        max-width: 100%;
+        word-wrap: break-word;
+    }
+
+    .user-bubble {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-bottom-right-radius: 4px;
+    }
+
+    .assistant-bubble {
+        background: white;
+        color: #1c1e21;
+        border-bottom-left-radius: 4px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .message-content {
+        line-height: 1.5;
+        font-size: 15px;
+    }
+
+    .message-meta {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .iteration-badge {
+        font-size: 12px;
+        color: #65676b;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .products-section {
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .products-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #65676b;
+        margin-bottom: 8px;
+    }
+
+    .products-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .product-tag {
+        background: #e4e6eb;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 13px;
+        color: #1c1e21;
+    }
+
+    .typing {
+        padding: 16px 20px;
+    }
+
+    .typing-indicator {
+        display: flex;
+        gap: 4px;
+    }
+
+    .typing-indicator span {
+        width: 8px;
+        height: 8px;
+        background: #90949c;
+        border-radius: 50%;
+        animation: typing 1.4s infinite ease-in-out;
+    }
+
+    .typing-indicator span:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .typing-indicator span:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+
+    @@keyframes typing {
+        0%, 60%, 100% {
+            transform: translateY(0);
         }
+        30% {
+            transform: translateY(-8px);
+        }
+    }
 
+    .chat-input-area {
+        padding: 12px 20px 20px;
+        background: white;
+        border-top: 1px solid #e4e6eb;
+    }
+
+    .error-toast {
+        background: #ffebe9;
+        border: 1px solid #ff8182;
+        color: #cf222e;
+        padding: 8px 12px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+    }
+
+    .error-toast button {
+        background: none;
+        border: none;
+        font-size: 18px;
+        cursor: pointer;
+        color: #cf222e;
+    }
+
+    .input-container {
+        display: flex;
+        align-items: flex-end;
+        gap: 12px;
+        background: #f0f2f5;
+        border-radius: 24px;
+        padding: 8px 8px 8px 16px;
+    }
+
+    .input-container textarea {
+        flex: 1;
+        border: none;
+        background: transparent;
+        resize: none;
+        font-size: 15px;
+        line-height: 1.4;
+        max-height: 120px;
+        outline: none;
+        font-family: inherit;
+    }
+
+    .input-container textarea::placeholder {
+        color: #90949c;
+    }
+
+    .send-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s, opacity 0.2s;
+    }
+
+    .send-button:hover:not(:disabled) {
+        transform: scale(1.05);
+    }
+
+    .send-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .spinner {
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @@keyframes spin {
         to {
-            opacity: 1;
+            transform: rotate(360deg);
         }
     }
 </style>
