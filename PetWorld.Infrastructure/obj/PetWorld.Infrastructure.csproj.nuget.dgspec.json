@@ -56,6 +56,10 @@
               "target": "Package",
               "version": "[1.0.0-preview.260128.1, )"
             },
+            "Microsoft.Agents.AI.Workflows": {
+              "target": "Package",
+              "version": "[1.0.0-preview.260128.1, )"
+            },
             "Microsoft.Extensions.AI": {
               "target": "Package",
               "version": "[10.2.0, )"

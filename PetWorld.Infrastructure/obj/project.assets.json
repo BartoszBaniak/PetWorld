@@ -147,6 +147,29 @@
           }
         }
       },
+      "Microsoft.Agents.AI.Workflows/1.0.0-preview.260128.1": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Agents.AI": "1.0.0-preview.260128.1",
+          "Microsoft.Agents.AI.Abstractions": "1.0.0-preview.260128.1",
+          "Microsoft.Extensions.AI": "10.2.0",
+          "Microsoft.Extensions.AI.Abstractions": "10.2.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.2",
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.2",
+          "Microsoft.Extensions.VectorData.Abstractions": "9.7.0",
+          "OpenTelemetry.Api": "1.13.1"
+        },
+        "compile": {
+          "lib/net10.0/Microsoft.Agents.AI.Workflows.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.Agents.AI.Workflows.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Microsoft.Build.Framework/18.0.2": {
         "type": "package",
         "compile": {
@@ -937,6 +960,19 @@
           }
         }
       },
+      "OpenTelemetry.Api/1.13.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0/OpenTelemetry.Api.dll": {
+            "related": ".dll-keyless.pem;.dll-keyless.sig;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0/OpenTelemetry.Api.dll": {
+            "related": ".dll-keyless.pem;.dll-keyless.sig;.xml"
+          }
+        }
+      },
       "System.ClientModel/1.8.1": {
         "type": "package",
         "dependencies": {
@@ -1227,6 +1263,7 @@
         "dependencies": {
           "Microsoft.Agents.AI": "1.0.0-preview.260128.1",
           "Microsoft.Agents.AI.OpenAI": "1.0.0-preview.260128.1",
+          "Microsoft.Agents.AI.Workflows": "1.0.0-preview.260128.1",
           "Microsoft.Extensions.AI": "10.2.0",
           "PetWorld.Domain": "1.0.0"
         },
@@ -1441,6 +1478,29 @@
         "lib/netstandard2.0/Microsoft.Agents.AI.OpenAI.xml",
         "microsoft.agents.ai.openai.1.0.0-preview.260128.1.nupkg.sha512",
         "microsoft.agents.ai.openai.nuspec"
+      ]
+    },
+    "Microsoft.Agents.AI.Workflows/1.0.0-preview.260128.1": {
+      "sha512": "1EMTRYRpsl6A3QW6kBxpy/8JD/kj1iKOalldSb8jrPW9T0Us8JzpUEmPwvjf/fB7BUenAtOEqvsndlDiQoa6kg==",
+      "type": "package",
+      "path": "microsoft.agents.ai.workflows/1.0.0-preview.260128.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "NUGET.md",
+        "icon.png",
+        "lib/net10.0/Microsoft.Agents.AI.Workflows.dll",
+        "lib/net10.0/Microsoft.Agents.AI.Workflows.xml",
+        "lib/net472/Microsoft.Agents.AI.Workflows.dll",
+        "lib/net472/Microsoft.Agents.AI.Workflows.xml",
+        "lib/net8.0/Microsoft.Agents.AI.Workflows.dll",
+        "lib/net8.0/Microsoft.Agents.AI.Workflows.xml",
+        "lib/net9.0/Microsoft.Agents.AI.Workflows.dll",
+        "lib/net9.0/Microsoft.Agents.AI.Workflows.xml",
+        "lib/netstandard2.0/Microsoft.Agents.AI.Workflows.dll",
+        "lib/netstandard2.0/Microsoft.Agents.AI.Workflows.xml",
+        "microsoft.agents.ai.workflows.1.0.0-preview.260128.1.nupkg.sha512",
+        "microsoft.agents.ai.workflows.nuspec"
       ]
     },
     "Microsoft.Build.Framework/18.0.2": {
@@ -3182,6 +3242,37 @@
         "lib/netstandard2.0/OpenAI.xml",
         "openai.2.8.0.nupkg.sha512",
         "openai.nuspec"
+      ]
+    },
+    "OpenTelemetry.Api/1.13.1": {
+      "sha512": "tieglRERo7Rgu8oE8aamnuXCMPEW5fXIqO5ngTMCNk9pOEXanc0SdQ86ZAD1goNiGcjWHn+P3WMZp0FZSJgCoQ==",
+      "type": "package",
+      "path": "opentelemetry.api/1.13.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "README.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net462/OpenTelemetry.Api.dll",
+        "lib/net462/OpenTelemetry.Api.dll-keyless.pem",
+        "lib/net462/OpenTelemetry.Api.dll-keyless.sig",
+        "lib/net462/OpenTelemetry.Api.xml",
+        "lib/net8.0/OpenTelemetry.Api.dll",
+        "lib/net8.0/OpenTelemetry.Api.dll-keyless.pem",
+        "lib/net8.0/OpenTelemetry.Api.dll-keyless.sig",
+        "lib/net8.0/OpenTelemetry.Api.xml",
+        "lib/net9.0/OpenTelemetry.Api.dll",
+        "lib/net9.0/OpenTelemetry.Api.dll-keyless.pem",
+        "lib/net9.0/OpenTelemetry.Api.dll-keyless.sig",
+        "lib/net9.0/OpenTelemetry.Api.xml",
+        "lib/netstandard2.0/OpenTelemetry.Api.dll",
+        "lib/netstandard2.0/OpenTelemetry.Api.dll-keyless.pem",
+        "lib/netstandard2.0/OpenTelemetry.Api.dll-keyless.sig",
+        "lib/netstandard2.0/OpenTelemetry.Api.xml",
+        "opentelemetry-icon-color.png",
+        "opentelemetry.api.1.13.1.nupkg.sha512",
+        "opentelemetry.api.nuspec"
       ]
     },
     "System.ClientModel/1.8.1": {

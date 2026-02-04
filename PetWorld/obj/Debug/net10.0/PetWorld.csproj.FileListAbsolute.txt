@@ -214,3 +214,5 @@ C:\c#\PetWorld\PetWorld\bin\Debug\net10.0\Google.GenAI.dll
 C:\c#\PetWorld\PetWorld\bin\Debug\net10.0\System.Management.dll
 C:\c#\PetWorld\PetWorld\bin\Debug\net10.0\runtimes\win\lib\net7.0\System.Management.dll
 C:\c#\PetWorld\PetWorld\obj\Debug\net10.0\PetWorld.sourcelink.json
+C:\c#\PetWorld\PetWorld\bin\Debug\net10.0\Microsoft.Agents.AI.Workflows.dll
+C:\c#\PetWorld\PetWorld\bin\Debug\net10.0\OpenTelemetry.Api.dll

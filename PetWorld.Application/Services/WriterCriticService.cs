@@ -1,3 +1,4 @@
+using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using PetWorld.Application.DTOs;
 using PetWorld.Application.Interfaces;
@@ -26,21 +27,27 @@ public class WriterCriticService : IWriterCriticService
         var products = await _productService.GetAllProductsAsync();
         var productsContext = JsonSerializer.Serialize(products);
 
+        // Create Writer Agent using Microsoft Agent Framework
+        var writerAgent = CreateWriterAgent(productsContext);
+
+        // Create Critic Agent using Microsoft Agent Framework
+        var criticAgent = CreateCriticAgent(productsContext);
+
         string writerResponse = string.Empty;
         bool approved = false;
         int iterationCount = 0;
-
         string criticFeedback = string.Empty;
 
+        // Writer-Critic Loop (max 3 iterations)
         while (!approved && iterationCount < MaxIterations)
         {
             iterationCount++;
 
-            // Writer Agent - generates response
-            writerResponse = await GenerateWriterResponse(question, productsContext, criticFeedback);
+            // Writer Agent generates response
+            writerResponse = await RunWriterAgentAsync(writerAgent, question, criticFeedback);
 
-            // Critic Agent - evaluates response
-            var criticResult = await EvaluateCriticResponse(question, writerResponse, productsContext);
+            // Critic Agent evaluates response
+            var criticResult = await RunCriticAgentAsync(criticAgent, question, writerResponse);
             approved = criticResult.approved;
             criticFeedback = criticResult.feedback;
 
@@ -66,9 +73,9 @@ public class WriterCriticService : IWriterCriticService
         return response;
     }
 
-    private async Task<string> GenerateWriterResponse(string question, string productsContext, string previousFeedback)
+    private ChatClientAgent CreateWriterAgent(string productsContext)
     {
-        var systemPrompt = $@"Jesteś pomocnym asystentem sklepu PetWorld, który pomaga klientom w wyborze produktów dla ich zwierząt.
+        var instructions = $@"Jesteś pomocnym asystentem sklepu PetWorld, który pomaga klientom w wyborze produktów dla ich zwierząt.
 Twoim zadaniem jest:
 1. Odpowiedzieć na pytanie klienta
 2. Polecić odpowiednie produkty z dostępnego katalogu
@@ -77,24 +84,15 @@ Twoim zadaniem jest:
 Dostępne produkty:
 {productsContext}
 
-{(string.IsNullOrEmpty(previousFeedback) ? "" : $"Poprzednia odpowiedź została odrzucona z powodu: {previousFeedback}\nPopraw swoją odpowiedź.")}
-
 Odpowiedz po polsku, w sposób przyjazny i pomocny. Na końcu odpowiedzi wymień polecane produkty w formacie:
 POLECANE PRODUKTY: [nazwa produktu 1], [nazwa produktu 2], ...";
 
-        var messages = new List<ChatMessage>
-        {
-            new(ChatRole.System, systemPrompt),
-            new(ChatRole.User, question)
-        };
-
-        var completionResponse = await _chatClient.GetResponseAsync(messages, cancellationToken: CancellationToken.None);
-        return completionResponse.Text ?? string.Empty;
+        return new ChatClientAgent(_chatClient, instructions);
     }
 
-    private async Task<(bool approved, string feedback)> EvaluateCriticResponse(string question, string writerResponse, string productsContext)
+    private ChatClientAgent CreateCriticAgent(string productsContext)
     {
-        var systemPrompt = $@"Jesteś krytykiem odpowiedzi w systemie AI dla sklepu PetWorld.
+        var instructions = $@"Jesteś krytykiem odpowiedzi w systemie AI dla sklepu PetWorld.
 Twoim zadaniem jest ocena czy odpowiedź:
 1. Odpowiada na pytanie klienta
 2. Poleca odpowiednie produkty z katalogu
@@ -108,16 +106,57 @@ Oceń odpowiedź i zwróć JSON w formacie:
 {{
   ""approved"": true/false,
   ""feedback"": ""szczegółowe wyjaśnienie dlaczego została odrzucona (jeśli approved=false) lub pusta wartość""
-}}";
+}}
+
+WAŻNE: Odpowiedz TYLKO w formacie JSON, bez dodatkowego tekstu.";
+
+        return new ChatClientAgent(_chatClient, instructions);
+    }
+
+    private async Task<string> RunWriterAgentAsync(ChatClientAgent writerAgent, string question, string previousFeedback)
+    {
+        var userMessage = string.IsNullOrEmpty(previousFeedback)
+            ? question
+            : $"{question}\n\n[UWAGA: Poprzednia odpowiedź została odrzucona z powodu: {previousFeedback}. Popraw swoją odpowiedź.]";
 
         var messages = new List<ChatMessage>
         {
-            new(ChatRole.System, systemPrompt),
-            new(ChatRole.User, $"Pytanie klienta: {question}\n\nOdpowiedź do oceny:\n{writerResponse}")
+            new(ChatRole.User, userMessage)
         };
 
-        var completionResponse = await _chatClient.GetResponseAsync(messages, cancellationToken: CancellationToken.None);
-        var criticResponseText = completionResponse.Text ?? "{}";
+        // Use the agent's streaming capability to get the response
+        var result = new List<string>();
+        await foreach (var update in writerAgent.RunStreamingAsync(messages))
+        {
+            if (update is AgentResponseUpdate responseUpdate && !string.IsNullOrEmpty(responseUpdate.Text))
+            {
+                result.Add(responseUpdate.Text);
+            }
+        }
+
+        return string.Join("", result);
+    }
+
+    private async Task<(bool approved, string feedback)> RunCriticAgentAsync(ChatClientAgent criticAgent, string question, string writerResponse)
+    {
+        var userMessage = $"Pytanie klienta: {question}\n\nOdpowiedź do oceny:\n{writerResponse}";
+
+        var messages = new List<ChatMessage>
+        {
+            new(ChatRole.User, userMessage)
+        };
+
+        // Use the agent's streaming capability to get the response
+        var result = new List<string>();
+        await foreach (var update in criticAgent.RunStreamingAsync(messages))
+        {
+            if (update is AgentResponseUpdate responseUpdate && !string.IsNullOrEmpty(responseUpdate.Text))
+            {
+                result.Add(responseUpdate.Text);
+            }
+        }
+
+        var criticResponseText = string.Join("", result);
 
         try
         {

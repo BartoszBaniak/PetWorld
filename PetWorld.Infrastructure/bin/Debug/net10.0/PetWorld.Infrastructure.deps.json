@@ -118,6 +118,24 @@
           }
         }
       },
+      "Microsoft.Agents.AI.Workflows/1.0.0-preview.260128.1": {
+        "dependencies": {
+          "Microsoft.Agents.AI": "1.0.0-preview.260128.1",
+          "Microsoft.Agents.AI.Abstractions": "1.0.0-preview.260128.1",
+          "Microsoft.Extensions.AI": "10.2.0",
+          "Microsoft.Extensions.AI.Abstractions": "10.2.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.2",
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.2",
+          "Microsoft.Extensions.VectorData.Abstractions": "9.7.0",
+          "OpenTelemetry.Api": "1.13.1"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.Agents.AI.Workflows.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "Microsoft.Build.Framework/18.0.2": {
         "runtime": {
           "lib/net10.0/Microsoft.Build.Framework.dll": {
@@ -708,6 +726,14 @@
           }
         }
       },
+      "OpenTelemetry.Api/1.13.1": {
+        "runtime": {
+          "lib/net9.0/OpenTelemetry.Api.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.13.1.1811"
+          }
+        }
+      },
       "System.ClientModel/1.8.1": {
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "10.0.2",
@@ -885,6 +911,7 @@
         "dependencies": {
           "Microsoft.Agents.AI": "1.0.0-preview.260128.1",
           "Microsoft.Agents.AI.OpenAI": "1.0.0-preview.260128.1",
+          "Microsoft.Agents.AI.Workflows": "1.0.0-preview.260128.1",
           "Microsoft.Extensions.AI": "10.2.0",
           "PetWorld.Domain": "1.0.0"
         },
@@ -973,6 +1000,13 @@
       "sha512": "sha512-gbA50YGcFWk4qdlp9JyagupxCW4YrI1NH5BJIyuqGRBj8oDFdXxbZpZnLREL+6FBAWkEbtp7sn87NaX1671IzA==",
       "path": "microsoft.agents.ai.openai/1.0.0-preview.260128.1",
       "hashPath": "microsoft.agents.ai.openai.1.0.0-preview.260128.1.nupkg.sha512"
+    },
+    "Microsoft.Agents.AI.Workflows/1.0.0-preview.260128.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1EMTRYRpsl6A3QW6kBxpy/8JD/kj1iKOalldSb8jrPW9T0Us8JzpUEmPwvjf/fB7BUenAtOEqvsndlDiQoa6kg==",
+      "path": "microsoft.agents.ai.workflows/1.0.0-preview.260128.1",
+      "hashPath": "microsoft.agents.ai.workflows.1.0.0-preview.260128.1.nupkg.sha512"
     },
     "Microsoft.Build.Framework/18.0.2": {
       "type": "package",
@@ -1183,6 +1217,13 @@
       "sha512": "sha512-KcYpZ9IhuxFD2hGAJlL5vABtkr00CjeJU0SY8CjZQyzvzkzLop8jhdX3iDvteVJg6e3y4TEiY+Kti4gDJAagnA==",
       "path": "openai/2.8.0",
       "hashPath": "openai.2.8.0.nupkg.sha512"
+    },
+    "OpenTelemetry.Api/1.13.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-tieglRERo7Rgu8oE8aamnuXCMPEW5fXIqO5ngTMCNk9pOEXanc0SdQ86ZAD1goNiGcjWHn+P3WMZp0FZSJgCoQ==",
+      "path": "opentelemetry.api/1.13.1",
+      "hashPath": "opentelemetry.api.1.13.1.nupkg.sha512"
     },
     "System.ClientModel/1.8.1": {
       "type": "package",
