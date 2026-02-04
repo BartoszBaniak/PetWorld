@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "PTsoNYg1P88=",
+  "dgSpecHash": "3YeuiecdcRg=",
   "success": true,
-  "projectFilePath": "c:\\c#\\PetWorld\\PetWorld.Application\\PetWorld.Application.csproj",
+  "projectFilePath": "C:\\c#\\PetWorld\\PetWorld.Application\\PetWorld.Application.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Bartosz\\.nuget\\packages\\microsoft.agents.ai\\1.0.0-preview.260128.1\\microsoft.agents.ai.1.0.0-preview.260128.1.nupkg.sha512",
     "C:\\Users\\Bartosz\\.nuget\\packages\\microsoft.agents.ai.abstractions\\1.0.0-preview.260128.1\\microsoft.agents.ai.abstractions.1.0.0-preview.260128.1.nupkg.sha512",

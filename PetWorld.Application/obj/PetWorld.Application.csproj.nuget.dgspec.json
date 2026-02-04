@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\c#\\PetWorld\\PetWorld.Application\\PetWorld.Application.csproj": {}
+    "C:\\c#\\PetWorld\\PetWorld.Application\\PetWorld.Application.csproj": {}
   },
   "projects": {
-    "c:\\c#\\PetWorld\\PetWorld.Application\\PetWorld.Application.csproj": {
+    "C:\\c#\\PetWorld\\PetWorld.Application\\PetWorld.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\c#\\PetWorld\\PetWorld.Application\\PetWorld.Application.csproj",
+        "projectUniqueName": "C:\\c#\\PetWorld\\PetWorld.Application\\PetWorld.Application.csproj",
         "projectName": "PetWorld.Application",
-        "projectPath": "c:\\c#\\PetWorld\\PetWorld.Application\\PetWorld.Application.csproj",
+        "projectPath": "C:\\c#\\PetWorld\\PetWorld.Application\\PetWorld.Application.csproj",
         "packagesPath": "C:\\Users\\Bartosz\\.nuget\\packages\\",
-        "outputPath": "c:\\c#\\PetWorld\\PetWorld.Application\\obj\\",
+        "outputPath": "C:\\c#\\PetWorld\\PetWorld.Application\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Bartosz\\AppData\\Roaming\\NuGet\\NuGet.Config"

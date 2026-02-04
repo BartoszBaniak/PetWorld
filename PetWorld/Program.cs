@@ -1,4 +1,4 @@
-using GenerativeAI.Microsoft;
+using Google.GenAI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
 using PetWorld.Application.Interfaces;
@@ -30,7 +30,8 @@ if (string.IsNullOrWhiteSpace(geminiApiKey))
 
 builder.Services.AddSingleton<IChatClient>(sp =>
 {
-    return new GenerativeAIChatClient(geminiApiKey, "gemini-2.0-flash");
+    var client = new Client(apiKey: geminiApiKey);
+    return client.AsIChatClient("gemini-2.5-flash-lite");
 });
 
 // Register repositories

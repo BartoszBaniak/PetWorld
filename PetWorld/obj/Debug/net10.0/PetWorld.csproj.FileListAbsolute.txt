@@ -207,5 +207,10 @@ c:\c#\PetWorld\PetWorld\bin\Debug\net10.0\runtimes\win-x64\native\k5sprt64.dll
 c:\c#\PetWorld\PetWorld\bin\Debug\net10.0\runtimes\win-x64\native\krb5_64.dll
 c:\c#\PetWorld\PetWorld\bin\Debug\net10.0\runtimes\win-x64\native\krbcc64.dll
 c:\c#\PetWorld\PetWorld\bin\Debug\net10.0\runtimes\win\lib\net8.0\System.Windows.Extensions.dll
-c:\c#\PetWorld\PetWorld\bin\Debug\net10.0\GenerativeAI.dll
-c:\c#\PetWorld\PetWorld\bin\Debug\net10.0\GenerativeAI.Microsoft.dll
+C:\c#\PetWorld\PetWorld\bin\Debug\net10.0\Google.Apis.dll
+C:\c#\PetWorld\PetWorld\bin\Debug\net10.0\Google.Apis.Auth.dll
+C:\c#\PetWorld\PetWorld\bin\Debug\net10.0\Google.Apis.Core.dll
+C:\c#\PetWorld\PetWorld\bin\Debug\net10.0\Google.GenAI.dll
+C:\c#\PetWorld\PetWorld\bin\Debug\net10.0\System.Management.dll
+C:\c#\PetWorld\PetWorld\bin\Debug\net10.0\runtimes\win\lib\net7.0\System.Management.dll
+C:\c#\PetWorld\PetWorld\obj\Debug\net10.0\PetWorld.sourcelink.json

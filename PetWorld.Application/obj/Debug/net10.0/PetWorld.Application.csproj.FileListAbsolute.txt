@@ -13,3 +13,4 @@ c:\c#\PetWorld\PetWorld.Application\obj\Debug\net10.0\PetWorld.Application.dll
 c:\c#\PetWorld\PetWorld.Application\obj\Debug\net10.0\refint\PetWorld.Application.dll
 c:\c#\PetWorld\PetWorld.Application\obj\Debug\net10.0\PetWorld.Application.pdb
 c:\c#\PetWorld\PetWorld.Application\obj\Debug\net10.0\ref\PetWorld.Application.dll
+C:\c#\PetWorld\PetWorld.Application\obj\Debug\net10.0\PetWorld.Application.sourcelink.json

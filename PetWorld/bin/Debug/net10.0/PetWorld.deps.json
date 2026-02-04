@@ -8,7 +8,7 @@
     ".NETCoreApp,Version=v10.0": {
       "PetWorld/1.0.0": {
         "dependencies": {
-          "Google_GenerativeAI.Microsoft": "3.6.3",
+          "Google.GenAI": "0.14.0",
           "Microsoft.EntityFrameworkCore.Tools": "10.0.2",
           "Microsoft.Extensions.AI.OpenAI": "10.2.0-preview.1.26063.2",
           "PetWorld.Application": "1.0.0",
@@ -26,31 +26,58 @@
           }
         }
       },
+      "Google.Apis/1.69.0": {
+        "dependencies": {
+          "Google.Apis.Core": "1.69.0"
+        },
+        "runtime": {
+          "lib/net6.0/Google.Apis.dll": {
+            "assemblyVersion": "1.69.0.0",
+            "fileVersion": "1.69.0.0"
+          }
+        }
+      },
+      "Google.Apis.Auth/1.69.0": {
+        "dependencies": {
+          "Google.Apis": "1.69.0",
+          "Google.Apis.Core": "1.69.0",
+          "System.Management": "7.0.2"
+        },
+        "runtime": {
+          "lib/net6.0/Google.Apis.Auth.dll": {
+            "assemblyVersion": "1.69.0.0",
+            "fileVersion": "1.69.0.0"
+          }
+        }
+      },
+      "Google.Apis.Core/1.69.0": {
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.3"
+        },
+        "runtime": {
+          "lib/net6.0/Google.Apis.Core.dll": {
+            "assemblyVersion": "1.69.0.0",
+            "fileVersion": "1.69.0.0"
+          }
+        }
+      },
+      "Google.GenAI/0.14.0": {
+        "dependencies": {
+          "Google.Apis.Auth": "1.69.0",
+          "Microsoft.Extensions.AI.Abstractions": "10.2.0"
+        },
+        "runtime": {
+          "lib/net8.0/Google.GenAI.dll": {
+            "assemblyVersion": "0.14.0.0",
+            "fileVersion": "0.14.0.0"
+          }
+        }
+      },
       "Google.Protobuf/3.32.0": {
         "runtime": {
           "lib/net5.0/Google.Protobuf.dll": {
             "assemblyVersion": "3.32.0.0",
             "fileVersion": "3.32.0.0"
-          }
-        }
-      },
-      "Google_GenerativeAI/3.6.3": {
-        "runtime": {
-          "lib/net9.0/GenerativeAI.dll": {
-            "assemblyVersion": "3.6.3.0",
-            "fileVersion": "3.6.3.0"
-          }
-        }
-      },
-      "Google_GenerativeAI.Microsoft/3.6.3": {
-        "dependencies": {
-          "Google_GenerativeAI": "3.6.3",
-          "Microsoft.Extensions.AI.Abstractions": "10.2.0"
-        },
-        "runtime": {
-          "lib/net9.0/GenerativeAI.Microsoft.dll": {
-            "assemblyVersion": "3.6.3.0",
-            "fileVersion": "3.6.3.0"
           }
         }
       },
@@ -527,7 +554,7 @@
       },
       "Mono.TextTemplating/3.0.0": {
         "dependencies": {
-          "System.CodeDom": "6.0.0"
+          "System.CodeDom": "7.0.0"
         },
         "runtime": {
           "lib/net6.0/Mono.TextTemplating.dll": {
@@ -622,11 +649,11 @@
           }
         }
       },
-      "System.CodeDom/6.0.0": {
+      "System.CodeDom/7.0.0": {
         "runtime": {
-          "lib/net6.0/System.CodeDom.dll": {
-            "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.0.21.52210"
+          "lib/net7.0/System.CodeDom.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.0.22.51805"
           }
         }
       },
@@ -698,6 +725,25 @@
           "lib/net8.0/System.Configuration.ConfigurationManager.dll": {
             "assemblyVersion": "8.0.0.0",
             "fileVersion": "8.0.23.53103"
+          }
+        }
+      },
+      "System.Management/7.0.2": {
+        "dependencies": {
+          "System.CodeDom": "7.0.0"
+        },
+        "runtime": {
+          "lib/net7.0/System.Management.dll": {
+            "assemblyVersion": "7.0.0.2",
+            "fileVersion": "7.0.723.27404"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/net7.0/System.Management.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "7.0.0.2",
+            "fileVersion": "7.0.723.27404"
           }
         }
       },
@@ -811,26 +857,40 @@
       "path": "bouncycastle.cryptography/2.6.2",
       "hashPath": "bouncycastle.cryptography.2.6.2.nupkg.sha512"
     },
+    "Google.Apis/1.69.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1TfjsXFejwIf7iWaE7A0FbnOEsk8FPlbdFAt1r+I8aSMQfLLdSVWCLdZz6TzuWVwoCGEuJUHTZ/FXdptdU3qWw==",
+      "path": "google.apis/1.69.0",
+      "hashPath": "google.apis.1.69.0.nupkg.sha512"
+    },
+    "Google.Apis.Auth/1.69.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ar07yxn/s41jdqQ3sMh8EAehiSvXQ9yE1MS4McmZINeSWvolnLHmIZ9Yxj4tHVIYYz0c7H/lpToVqm7C2aYx9g==",
+      "path": "google.apis.auth/1.69.0",
+      "hashPath": "google.apis.auth.1.69.0.nupkg.sha512"
+    },
+    "Google.Apis.Core/1.69.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-SXUcurNUPxYMtOnawvB2Av18VrPBC9W7So9q9ikmXIXLGiv4RX7Zbu4kc+8PbwTdd8wLt54r0PBGOT5RaKoTjQ==",
+      "path": "google.apis.core/1.69.0",
+      "hashPath": "google.apis.core.1.69.0.nupkg.sha512"
+    },
+    "Google.GenAI/0.14.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-VJBRpkdnNK9aCjIsrceIP1pErjkKmwoNexe+5/nQHZKX7eWHmNkaZw4f4fdI2d9hyHN7ITPGGoHYLCYk5foM3g==",
+      "path": "google.genai/0.14.0",
+      "hashPath": "google.genai.0.14.0.nupkg.sha512"
+    },
     "Google.Protobuf/3.32.0": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-fsKxV5bhcvXmZi+cUo5+IxzRMBHwHeFO8G5utNa9f+Mu37kmfy8JcUVvWPt4cX7EuQWAjjHUjZqVl7nGSTRHRg==",
       "path": "google.protobuf/3.32.0",
       "hashPath": "google.protobuf.3.32.0.nupkg.sha512"
-    },
-    "Google_GenerativeAI/3.6.3": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-9jKh5XPfEKIVggiOPcJQJvzTTNHaLzdDkGIHHhmsPbIWPlzHJorBaCp+3SkLV3o76hevFTZLHnCyyz5rE0P85g==",
-      "path": "google_generativeai/3.6.3",
-      "hashPath": "google_generativeai.3.6.3.nupkg.sha512"
-    },
-    "Google_GenerativeAI.Microsoft/3.6.3": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-EbN/ywa3xcRvpCrbrZCOtcWtTKPux3bqwM0y0nQQCdwGT0VfC34TjozaPfHmdh4dGDRkQWQji6m8H3qrq6FxfQ==",
-      "path": "google_generativeai.microsoft/3.6.3",
-      "hashPath": "google_generativeai.microsoft.3.6.3.nupkg.sha512"
     },
     "Humanizer.Core/2.14.1": {
       "type": "package",
@@ -1042,12 +1102,12 @@
       "path": "system.clientmodel/1.8.1",
       "hashPath": "system.clientmodel.1.8.1.nupkg.sha512"
     },
-    "System.CodeDom/6.0.0": {
+    "System.CodeDom/7.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-CPc6tWO1LAer3IzfZufDBRL+UZQcj5uS207NHALQzP84Vp/z6wF0Aa0YZImOQY8iStY0A2zI/e3ihKNPfUm8XA==",
-      "path": "system.codedom/6.0.0",
-      "hashPath": "system.codedom.6.0.0.nupkg.sha512"
+      "sha512": "sha512-GLltyqEsE5/3IE+zYRP5sNa1l44qKl9v+bfdMcwg+M9qnQf47wK3H0SUR/T+3N4JEQXF3vV4CSuuo0rsg+nq2A==",
+      "path": "system.codedom/7.0.0",
+      "hashPath": "system.codedom.7.0.0.nupkg.sha512"
     },
     "System.Composition/9.0.0": {
       "type": "package",
@@ -1097,6 +1157,13 @@
       "sha512": "sha512-JlYi9XVvIREURRUlGMr1F6vOFLk7YSY4p1vHo4kX3tQ0AGrjqlRWHDi66ImHhy6qwXBG3BJ6Y1QlYQ+Qz6Xgww==",
       "path": "system.configuration.configurationmanager/8.0.0",
       "hashPath": "system.configuration.configurationmanager.8.0.0.nupkg.sha512"
+    },
+    "System.Management/7.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/qEUN91mP/MUQmJnM5y5BdT7ZoPuVrtxnFlbJ8a3kBJGhe2wCzBfnPFtK2wTtEEcf3DMGR9J00GZZfg6HRI6yA==",
+      "path": "system.management/7.0.2",
+      "hashPath": "system.management.7.0.2.nupkg.sha512"
     },
     "System.Memory.Data/8.0.1": {
       "type": "package",

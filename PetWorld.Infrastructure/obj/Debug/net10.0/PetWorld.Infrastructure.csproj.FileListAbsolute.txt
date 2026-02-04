@@ -17,3 +17,4 @@ c:\c#\PetWorld\PetWorld.Infrastructure\obj\Debug\net10.0\refint\PetWorld.Infrast
 c:\c#\PetWorld\PetWorld.Infrastructure\obj\Debug\net10.0\PetWorld.Infrastructure.pdb
 C:\c#\PetWorld\PetWorld.Infrastructure\obj\Debug\net10.0\PetWorld.Infrastructure.genruntimeconfig.cache
 C:\c#\PetWorld\PetWorld.Infrastructure\obj\Debug\net10.0\ref\PetWorld.Infrastructure.dll
+C:\c#\PetWorld\PetWorld.Infrastructure\obj\Debug\net10.0\PetWorld.Infrastructure.sourcelink.json

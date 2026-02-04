@@ -3676,8 +3676,8 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "c:\\c#\\PetWorld\\PetWorld.Application\\PetWorld.Application.csproj": {
-              "projectPath": "c:\\c#\\PetWorld\\PetWorld.Application\\PetWorld.Application.csproj"
+            "C:\\c#\\PetWorld\\PetWorld.Application\\PetWorld.Application.csproj": {
+              "projectPath": "C:\\c#\\PetWorld\\PetWorld.Application\\PetWorld.Application.csproj"
             },
             "C:\\c#\\PetWorld\\PetWorld.Domain\\PetWorld.Domain.csproj": {
               "projectPath": "C:\\c#\\PetWorld\\PetWorld.Domain\\PetWorld.Domain.csproj"
