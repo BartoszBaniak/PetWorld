@@ -33,9 +33,9 @@ public class PetWorldDbContext : DbContext
         modelBuilder.Entity<ChatHistory>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Pytanie).IsRequired().HasMaxLength(1000);
-            entity.Property(e => e.Odpowiedz).IsRequired().HasMaxLength(5000);
-            entity.Property(e => e.RecommendedProducts).HasMaxLength(1000);
+            entity.Property(e => e.Pytanie).IsRequired().HasColumnType("TEXT");
+            entity.Property(e => e.Odpowiedz).IsRequired().HasColumnType("TEXT");
+            entity.Property(e => e.RecommendedProducts).HasColumnType("TEXT");
         });
     }
 }
