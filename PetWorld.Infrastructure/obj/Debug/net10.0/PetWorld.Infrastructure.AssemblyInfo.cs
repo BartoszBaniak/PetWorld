@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PetWorld.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fe5c817562664c2f30f881a79fe4f08864b26835")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+78778a3c513d6981aacf2882af1fd5d38585fea4")]
 [assembly: System.Reflection.AssemblyProductAttribute("PetWorld.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PetWorld.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
