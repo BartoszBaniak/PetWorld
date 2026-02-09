@@ -40,23 +40,23 @@
                     <div class="history-card" @onclick="() => ExpandCard(history.Id)">
                         <div class="card-header">
                             <div class="card-meta">
-                                <span class="card-date">📅 @history.Data.ToString("dd MMM yyyy, HH:mm")</span>
-                                <span class="iteration-badge iteration-@history.LiczbaIteracji">
-                                    🔄 @history.LiczbaIteracji iteracji
+                                <span class="card-date">📅 @history.Timestamp.ToString("dd MMM yyyy, HH:mm")</span>
+                                <span class="iteration-badge iteration-@history.IterationCount">
+                                    🔄 @history.IterationCount iteracji
                                 </span>
                             </div>
                         </div>
 
                         <div class="card-question">
                             <span class="label">Pytanie:</span>
-                            <p>@history.Pytanie</p>
+                            <p>@history.Question</p>
                         </div>
 
                         @if (expandedCardId == history.Id)
                         {
                             <div class="card-answer expanded">
                                 <span class="label">Odpowiedź:</span>
-                                <p>@history.Odpowiedz</p>
+                                <p>@history.Answer</p>
 
                                 @if (!string.IsNullOrEmpty(history.RecommendedProducts))
                                 {
@@ -76,7 +76,7 @@
                         {
                             <div class="card-answer preview">
                                 <span class="label">Odpowiedź:</span>
-                                <p class="truncate">@TruncateText(history.Odpowiedz, 150)</p>
+                                <p class="truncate">@TruncateText(history.Answer, 150)</p>
                                 <span class="expand-hint">Kliknij, aby rozwinąć</span>
                             </div>
                         }
@@ -90,7 +90,7 @@
                     <span class="stat-label">Rozmów</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-value">@chatHistories.Average(h => h.LiczbaIteracji).ToString("F1")</span>
+                    <span class="stat-value">@chatHistories.Average(h => h.IterationCount).ToString("F1")</span>
                     <span class="stat-label">Śr. iteracji</span>
                 </div>
             </div>
@@ -124,7 +124,7 @@
         try
         {
             var histories = await ChatHistoryService.GetAllHistoryAsync();
-            chatHistories = histories.OrderByDescending(h => h.Data).ToList();
+            chatHistories = histories.OrderByDescending(h => h.Timestamp).ToList();
         }
         catch (Exception ex)
         {

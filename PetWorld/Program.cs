@@ -5,6 +5,7 @@ using PetWorld.Application.Interfaces;
 using PetWorld.Application.Services;
 using PetWorld.Components;
 using PetWorld.Domain.Interfaces;
+using PetWorld.Infrastructure.Agents;
 using PetWorld.Infrastructure.Data;
 using PetWorld.Infrastructure.Repositories;
 
@@ -35,11 +36,15 @@ builder.Services.AddSingleton<IChatClient>(sp =>
 });
 
 // Register repositories
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IChatHistoryRepository, ChatHistoryRepository>();
 
 // Register application services
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IChatHistoryService, ChatHistoryService>();
+
+// Register agent factory (Infrastructure layer)
+builder.Services.AddScoped<IWriterAgentFactory, WriterAgentFactory>();
 builder.Services.AddScoped<IWriterCriticService, WriterCriticService>();
 
 var app = builder.Build();

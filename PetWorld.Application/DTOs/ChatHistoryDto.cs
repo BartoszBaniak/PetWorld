@@ -3,9 +3,9 @@ namespace PetWorld.Application.DTOs;
 public class ChatHistoryDto
 {
     public int Id { get; set; }
-    public DateTime Data { get; set; }
-    public string Pytanie { get; set; } = string.Empty;
-    public string Odpowiedz { get; set; } = string.Empty;
-    public int LiczbaIteracji { get; set; }
+    public DateTime Timestamp { get; set; }
+    public string Question { get; set; } = string.Empty;
+    public string Answer { get; set; } = string.Empty;
+    public int IterationCount { get; set; }
     public string? RecommendedProducts { get; set; }
 }

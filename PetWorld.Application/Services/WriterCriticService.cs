@@ -1,4 +1,3 @@
-using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using PetWorld.Application.DTOs;
 using PetWorld.Application.Interfaces;
@@ -8,30 +7,24 @@ namespace PetWorld.Application.Services;
 
 public class WriterCriticService : IWriterCriticService
 {
-    private readonly IChatClient _chatClient;
-    private readonly IProductService _productService;
+    private readonly IWriterAgentFactory _agentFactory;
+    private readonly IChatClient _writerAgent;
+    private readonly IChatClient _criticAgent;
+    private readonly IList<AITool> _productTools;
     private const int MaxIterations = 3;
 
-    public WriterCriticService(IChatClient chatClient, IProductService productService)
+    public WriterCriticService(IWriterAgentFactory agentFactory)
     {
-        _chatClient = chatClient;
-        _productService = productService;
+        _agentFactory = agentFactory;
+        _writerAgent = agentFactory.CreateWriterAgent();
+        _criticAgent = agentFactory.CreateCriticAgent();
+        _productTools = agentFactory.CreateProductTools();
     }
 
     public async Task<WriterCriticResponse> ProcessQuestionAsync(string question)
     {
         var response = new WriterCriticResponse();
         var iterations = new List<IterationDetail>();
-
-        // Get all products for context
-        var products = await _productService.GetAllProductsAsync();
-        var productsContext = JsonSerializer.Serialize(products);
-
-        // Create Writer Agent using Microsoft Agent Framework
-        var writerAgent = CreateWriterAgent(productsContext);
-
-        // Create Critic Agent using Microsoft Agent Framework
-        var criticAgent = CreateCriticAgent(productsContext);
 
         string writerResponse = string.Empty;
         bool approved = false;
@@ -43,11 +36,11 @@ public class WriterCriticService : IWriterCriticService
         {
             iterationCount++;
 
-            // Writer Agent generates response
-            writerResponse = await RunWriterAgentAsync(writerAgent, question, criticFeedback);
+            // Writer Agent generates response using tools
+            writerResponse = await RunWriterWithToolsAsync(question, criticFeedback);
 
             // Critic Agent evaluates response
-            var criticResult = await RunCriticAgentAsync(criticAgent, question, writerResponse);
+            var criticResult = await RunCriticAgentAsync(question, writerResponse);
             approved = criticResult.approved;
             criticFeedback = criticResult.feedback;
 
@@ -73,47 +66,7 @@ public class WriterCriticService : IWriterCriticService
         return response;
     }
 
-    private ChatClientAgent CreateWriterAgent(string productsContext)
-    {
-        var instructions = $@"Jesteś pomocnym asystentem sklepu PetWorld, który pomaga klientom w wyborze produktów dla ich zwierząt.
-Twoim zadaniem jest:
-1. Odpowiedzieć na pytanie klienta
-2. Polecić odpowiednie produkty z dostępnego katalogu
-3. Dostarczyć pomocne porady dotyczące zwierząt
-
-Dostępne produkty:
-{productsContext}
-
-Odpowiedz po polsku, w sposób przyjazny i pomocny. Na końcu odpowiedzi wymień polecane produkty w formacie:
-POLECANE PRODUKTY: [nazwa produktu 1], [nazwa produktu 2], ...";
-
-        return new ChatClientAgent(_chatClient, instructions);
-    }
-
-    private ChatClientAgent CreateCriticAgent(string productsContext)
-    {
-        var instructions = $@"Jesteś krytykiem odpowiedzi w systemie AI dla sklepu PetWorld.
-Twoim zadaniem jest ocena czy odpowiedź:
-1. Odpowiada na pytanie klienta
-2. Poleca odpowiednie produkty z katalogu
-3. Jest pomocna i profesjonalna
-4. Zawiera realistyczne i trafne rekomendacje
-
-Dostępne produkty:
-{productsContext}
-
-Oceń odpowiedź i zwróć JSON w formacie:
-{{
-  ""approved"": true/false,
-  ""feedback"": ""szczegółowe wyjaśnienie dlaczego została odrzucona (jeśli approved=false) lub pusta wartość""
-}}
-
-WAŻNE: Odpowiedz TYLKO w formacie JSON, bez dodatkowego tekstu.";
-
-        return new ChatClientAgent(_chatClient, instructions);
-    }
-
-    private async Task<string> RunWriterAgentAsync(ChatClientAgent writerAgent, string question, string previousFeedback)
+    private async Task<string> RunWriterWithToolsAsync(string question, string previousFeedback)
     {
         var userMessage = string.IsNullOrEmpty(previousFeedback)
             ? question
@@ -124,20 +77,77 @@ WAŻNE: Odpowiedz TYLKO w formacie JSON, bez dodatkowego tekstu.";
             new(ChatRole.User, userMessage)
         };
 
-        // Use the agent's streaming capability to get the response
-        var result = new List<string>();
-        await foreach (var update in writerAgent.RunStreamingAsync(messages))
+        var options = new ChatOptions
         {
-            if (update is AgentResponseUpdate responseUpdate && !string.IsNullOrEmpty(responseUpdate.Text))
+            Tools = _productTools
+        };
+
+        // Loop to handle tool calls
+        const int maxToolCalls = 5;
+        int toolCallCount = 0;
+
+        while (toolCallCount < maxToolCalls)
+        {
+            var chatResponse = await _writerAgent.GetResponseAsync(messages, options);
+
+            // Check if there are tool calls in the response messages
+            var toolCalls = chatResponse.Messages
+                .SelectMany(m => m.Contents)
+                .OfType<FunctionCallContent>()
+                .ToList();
+
+            if (!toolCalls.Any())
             {
-                result.Add(responseUpdate.Text);
+                // No tool calls, return the response
+                return chatResponse.Text ?? string.Empty;
             }
+
+            // Add assistant messages with tool calls
+            foreach (var msg in chatResponse.Messages)
+            {
+                messages.Add(msg);
+            }
+
+            // Execute tool calls and add results
+            foreach (var toolCall in toolCalls)
+            {
+                var result = await ExecuteToolAsync(toolCall);
+                messages.Add(new ChatMessage(ChatRole.Tool, [
+                    new FunctionResultContent(toolCall.CallId, result)
+                ]));
+            }
+
+            toolCallCount++;
         }
 
-        return string.Join("", result);
+        // If we've exceeded max tool calls, get final response
+        var finalResponse = await _writerAgent.GetResponseAsync(messages, options);
+        return finalResponse.Text ?? string.Empty;
     }
 
-    private async Task<(bool approved, string feedback)> RunCriticAgentAsync(ChatClientAgent criticAgent, string question, string writerResponse)
+    private async Task<string> ExecuteToolAsync(FunctionCallContent toolCall)
+    {
+        var tool = _productTools.OfType<AIFunction>().FirstOrDefault(t => t.Name == toolCall.Name);
+        if (tool == null)
+        {
+            return $"Nieznane narzędzie: {toolCall.Name}";
+        }
+
+        try
+        {
+            var args = toolCall.Arguments != null
+                ? new AIFunctionArguments(toolCall.Arguments)
+                : null;
+            var result = await tool.InvokeAsync(args);
+            return result?.ToString() ?? "Brak wyników";
+        }
+        catch (Exception ex)
+        {
+            return $"Błąd podczas wykonywania narzędzia: {ex.Message}";
+        }
+    }
+
+    private async Task<(bool approved, string feedback)> RunCriticAgentAsync(string question, string writerResponse)
     {
         var userMessage = $"Pytanie klienta: {question}\n\nOdpowiedź do oceny:\n{writerResponse}";
 
@@ -146,21 +156,11 @@ WAŻNE: Odpowiedz TYLKO w formacie JSON, bez dodatkowego tekstu.";
             new(ChatRole.User, userMessage)
         };
 
-        // Use the agent's streaming capability to get the response
-        var result = new List<string>();
-        await foreach (var update in criticAgent.RunStreamingAsync(messages))
-        {
-            if (update is AgentResponseUpdate responseUpdate && !string.IsNullOrEmpty(responseUpdate.Text))
-            {
-                result.Add(responseUpdate.Text);
-            }
-        }
-
-        var criticResponseText = string.Join("", result);
+        var response = await _criticAgent.GetResponseAsync(messages);
+        var criticResponseText = response.Text ?? "{}";
 
         try
         {
-            // Extract JSON from response
             var jsonStart = criticResponseText.IndexOf('{');
             var jsonEnd = criticResponseText.LastIndexOf('}') + 1;
             if (jsonStart >= 0 && jsonEnd > jsonStart)
@@ -178,7 +178,7 @@ WAŻNE: Odpowiedz TYLKO w formacie JSON, bez dodatkowego tekstu.";
         return (false, "Nie można było ocenić odpowiedzi poprawnie.");
     }
 
-    private List<string> ExtractRecommendedProducts(string response)
+    private static List<string> ExtractRecommendedProducts(string response)
     {
         var products = new List<string>();
 
@@ -187,7 +187,7 @@ WAŻNE: Odpowiedz TYLKO w formacie JSON, bez dodatkowego tekstu.";
             var startIndex = response.IndexOf("POLECANE PRODUKTY:", StringComparison.OrdinalIgnoreCase);
             var productsText = response.Substring(startIndex + "POLECANE PRODUKTY:".Length);
 
-            var items = productsText.Split(new[] { ',', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+            var items = productsText.Split([',', '\n', '\r'], StringSplitOptions.RemoveEmptyEntries);
             products.AddRange(items.Select(p => p.Trim()).Where(p => !string.IsNullOrEmpty(p)));
         }
 

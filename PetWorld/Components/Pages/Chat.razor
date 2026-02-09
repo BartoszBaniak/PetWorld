@@ -185,10 +185,10 @@
             // Save to history
             var chatHistoryDto = new ChatHistoryDto
             {
-                Data = DateTime.UtcNow,
-                Pytanie = question,
-                Odpowiedz = response.FinalAnswer,
-                LiczbaIteracji = response.IterationCount,
+                Timestamp = DateTime.UtcNow,
+                Question = question,
+                Answer = response.FinalAnswer,
+                IterationCount = response.IterationCount,
                 RecommendedProducts = string.Join(", ", response.RecommendedProducts)
             };
 

@@ -7,9 +7,9 @@ namespace PetWorld.Application.Services;
 
 public class ProductService : IProductService
 {
-    private readonly IRepository<Product> _productRepository;
+    private readonly IProductRepository _productRepository;
 
-    public ProductService(IRepository<Product> productRepository)
+    public ProductService(IProductRepository productRepository)
     {
         _productRepository = productRepository;
     }
@@ -28,17 +28,20 @@ public class ProductService : IProductService
 
     public async Task<IEnumerable<ProductDto>> SearchProductsAsync(string searchTerm)
     {
-        var allProducts = await _productRepository.GetAllAsync();
-        var searchLower = searchTerm.ToLower();
+        var products = await _productRepository.SearchAsync(searchTerm);
+        return products.Select(MapToDto);
+    }
 
-        return allProducts
-            .Where(p =>
-                p.Name.ToLower().Contains(searchLower) ||
-                p.Description.ToLower().Contains(searchLower) ||
-                p.Category.ToLower().Contains(searchLower) ||
-                p.PetType.ToLower().Contains(searchLower) ||
-                (p.Tags != null && p.Tags.ToLower().Contains(searchLower)))
-            .Select(MapToDto);
+    public async Task<IEnumerable<ProductDto>> GetByPetTypeAsync(string petType)
+    {
+        var products = await _productRepository.GetByPetTypeAsync(petType);
+        return products.Select(MapToDto);
+    }
+
+    public async Task<IEnumerable<ProductDto>> GetByCategoryAsync(string category)
+    {
+        var products = await _productRepository.GetByCategoryAsync(category);
+        return products.Select(MapToDto);
     }
 
     private static ProductDto MapToDto(Product product)
