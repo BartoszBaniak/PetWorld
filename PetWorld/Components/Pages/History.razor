@@ -55,8 +55,38 @@
                         @if (expandedCardId == history.Id)
                         {
                             <div class="card-answer expanded">
-                                <span class="label">Odpowiedź:</span>
-                                <p>@history.Answer</p>
+                                @if (history.Iterations.Any())
+                                {
+                                    <div class="iterations-section">
+                                        <span class="label">Iteracje Writer-Critic:</span>
+                                        @foreach (var iteration in history.Iterations)
+                                        {
+                                            <div class="iteration-item">
+                                                <div class="iteration-header">
+                                                    <span class="iteration-number">Iteracja @iteration.IterationNumber</span>
+                                                    <span class="iteration-status @(iteration.CriticApproved ? "approved" : "rejected")">
+                                                        @(iteration.CriticApproved ? "✓ Zaakceptowana" : "✗ Odrzucona")
+                                                    </span>
+                                                </div>
+                                                <div class="iteration-content">
+                                                    <div class="writer-response">
+                                                        <span class="sub-label">Odpowiedź Writer:</span>
+                                                        <p>@TruncateText(iteration.WriterResponse, 300)</p>
+                                                    </div>
+                                                    <div class="critic-feedback @(iteration.CriticApproved ? "approved" : "rejected")">
+                                                        <span class="sub-label">Ocena Critic:</span>
+                                                        <p>@(iteration.CriticApproved ? "Odpowiedź zaakceptowana" : iteration.CriticFeedback)</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="label">Odpowiedź końcowa:</span>
+                                    <p>@history.Answer</p>
+                                }
 
                                 @if (!string.IsNullOrEmpty(history.RecommendedProducts))
                                 {
@@ -408,6 +438,108 @@
         border-radius: 8px;
         margin-top: 16px;
         font-size: 14px;
+    }
+
+    .iterations-section {
+        margin-bottom: 16px;
+    }
+
+    .iteration-item {
+        background: white;
+        border: 1px solid #e4e6eb;
+        border-radius: 8px;
+        margin-top: 8px;
+        overflow: hidden;
+    }
+
+    .iteration-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 12px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #e4e6eb;
+    }
+
+    .iteration-number {
+        font-weight: 600;
+        font-size: 13px;
+        color: #1c1e21;
+    }
+
+    .iteration-status {
+        font-size: 12px;
+        padding: 3px 8px;
+        border-radius: 10px;
+        font-weight: 500;
+    }
+
+    .iteration-status.approved {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .iteration-status.rejected {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .iteration-content {
+        padding: 12px;
+    }
+
+    .writer-response,
+    .critic-feedback {
+        margin-bottom: 8px;
+    }
+
+    .writer-response:last-child,
+    .critic-feedback:last-child {
+        margin-bottom: 0;
+    }
+
+    .sub-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: #65676b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .writer-response p,
+    .critic-feedback p {
+        margin: 0;
+        font-size: 13px;
+        color: #1c1e21;
+        line-height: 1.4;
+        white-space: pre-wrap;
+    }
+
+    .critic-feedback {
+        padding: 8px;
+        border-radius: 6px;
+        border-left: 3px solid #ccc;
+        background: #f8f9fa;
+    }
+
+    .critic-feedback.rejected {
+        background: #fff3cd;
+        border-left-color: #ffc107;
+    }
+
+    .critic-feedback.rejected p {
+        color: #856404;
+    }
+
+    .critic-feedback.approved {
+        background: #d4edda;
+        border-left-color: #28a745;
+    }
+
+    .critic-feedback.approved p {
+        color: #155724;
     }
 
     @@keyframes spin {

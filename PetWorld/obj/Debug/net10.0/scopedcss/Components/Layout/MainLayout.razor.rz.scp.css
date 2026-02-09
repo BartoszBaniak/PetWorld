@@ -5,16 +5,11 @@
 }
 
 .sidebar[b-iqyqxke98a] {
-    width: 80px;
+    width: 200px;
     background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    transition: width 0.3s ease;
-}
-
-.sidebar:hover[b-iqyqxke98a] {
-    width: 200px;
 }
 
 .main-content[b-iqyqxke98a] {
@@ -48,10 +43,6 @@
 
 @media (max-width: 768px) {
     .sidebar[b-iqyqxke98a] {
-        width: 60px;
-    }
-
-    .sidebar:hover[b-iqyqxke98a] {
         width: 60px;
     }
 }

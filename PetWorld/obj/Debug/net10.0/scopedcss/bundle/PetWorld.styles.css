@@ -6,16 +6,11 @@
 }
 
 .sidebar[b-iqyqxke98a] {
-    width: 80px;
+    width: 200px;
     background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    transition: width 0.3s ease;
-}
-
-.sidebar:hover[b-iqyqxke98a] {
-    width: 200px;
 }
 
 .main-content[b-iqyqxke98a] {
@@ -51,10 +46,6 @@
     .sidebar[b-iqyqxke98a] {
         width: 60px;
     }
-
-    .sidebar:hover[b-iqyqxke98a] {
-        width: 60px;
-    }
 }
 /* /Components/Layout/NavMenu.razor.rz.scp.css */
 .nav-header[b-vbtn3bq7m5] {
@@ -68,7 +59,6 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    overflow: hidden;
 }
 
 .logo-icon[b-vbtn3bq7m5] {
@@ -81,12 +71,6 @@
     font-weight: 700;
     color: white;
     white-space: nowrap;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-:host-context(.sidebar:hover) .logo-text[b-vbtn3bq7m5] {
-    opacity: 1;
 }
 
 .nav-menu[b-vbtn3bq7m5] {
@@ -106,7 +90,6 @@
     color: rgba(255, 255, 255, 0.7);
     text-decoration: none;
     transition: all 0.2s ease;
-    overflow: hidden;
 }
 
 .nav-item:hover[b-vbtn3bq7m5] {
@@ -128,14 +111,8 @@
 
 .nav-label[b-vbtn3bq7m5] {
     white-space: nowrap;
-    opacity: 0;
-    transition: opacity 0.3s ease;
     font-size: 14px;
     font-weight: 500;
-}
-
-:host-context(.sidebar:hover) .nav-label[b-vbtn3bq7m5] {
-    opacity: 1;
 }
 
 .nav-footer[b-vbtn3bq7m5] {
@@ -162,12 +139,6 @@
     font-size: 12px;
     color: rgba(255, 255, 255, 0.6);
     white-space: nowrap;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-:host-context(.sidebar:hover) .status-text[b-vbtn3bq7m5] {
-    opacity: 1;
 }
 
 @keyframes pulse-b-vbtn3bq7m5 {

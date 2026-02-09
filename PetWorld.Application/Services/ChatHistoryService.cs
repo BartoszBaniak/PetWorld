@@ -2,6 +2,7 @@ using PetWorld.Application.DTOs;
 using PetWorld.Application.Interfaces;
 using PetWorld.Domain.Entities;
 using PetWorld.Domain.Interfaces;
+using System.Text.Json;
 
 namespace PetWorld.Application.Services;
 
@@ -22,11 +23,16 @@ public class ChatHistoryService : IChatHistoryService
 
     public async Task<ChatHistoryDto> SaveChatHistoryAsync(ChatHistoryDto chatHistoryDto)
     {
+        var iterationsJson = chatHistoryDto.Iterations.Any()
+            ? JsonSerializer.Serialize(chatHistoryDto.Iterations)
+            : null;
+
         var chatHistory = ChatHistory.Create(
             chatHistoryDto.Question,
             chatHistoryDto.Answer,
             chatHistoryDto.IterationCount,
-            chatHistoryDto.RecommendedProducts);
+            chatHistoryDto.RecommendedProducts,
+            iterationsJson);
 
         var saved = await _chatHistoryRepository.AddAsync(chatHistory);
         return MapToDto(saved);
@@ -34,6 +40,19 @@ public class ChatHistoryService : IChatHistoryService
 
     private static ChatHistoryDto MapToDto(ChatHistory chatHistory)
     {
+        var iterations = new List<IterationDetail>();
+        if (!string.IsNullOrEmpty(chatHistory.IterationsJson))
+        {
+            try
+            {
+                iterations = JsonSerializer.Deserialize<List<IterationDetail>>(chatHistory.IterationsJson) ?? new();
+            }
+            catch
+            {
+                // If deserialization fails, return empty list
+            }
+        }
+
         return new ChatHistoryDto
         {
             Id = chatHistory.Id,
@@ -41,7 +60,8 @@ public class ChatHistoryService : IChatHistoryService
             Question = chatHistory.Question,
             Answer = chatHistory.Answer,
             IterationCount = chatHistory.IterationCount,
-            RecommendedProducts = chatHistory.RecommendedProducts
+            RecommendedProducts = chatHistory.RecommendedProducts,
+            Iterations = iterations
         };
     }
 }

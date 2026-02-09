@@ -7,6 +7,7 @@ public class ChatHistory : BaseEntity
     public string Answer { get; private set; } = string.Empty;
     public int IterationCount { get; private set; }
     public string? RecommendedProducts { get; private set; }
+    public string? IterationsJson { get; private set; }
 
     private ChatHistory() { }
 
@@ -14,20 +15,23 @@ public class ChatHistory : BaseEntity
         string question,
         string answer,
         int iterationCount,
-        string? recommendedProducts)
+        string? recommendedProducts,
+        string? iterationsJson)
     {
         Timestamp = DateTime.UtcNow;
         Question = question;
         Answer = answer;
         IterationCount = iterationCount;
         RecommendedProducts = recommendedProducts;
+        IterationsJson = iterationsJson;
     }
 
     public static ChatHistory Create(
         string question,
         string answer,
         int iterationCount,
-        string? recommendedProducts = null)
+        string? recommendedProducts = null,
+        string? iterationsJson = null)
     {
         if (string.IsNullOrWhiteSpace(question))
             throw new ArgumentException("Question is required", nameof(question));
@@ -38,6 +42,6 @@ public class ChatHistory : BaseEntity
         if (iterationCount < 1)
             throw new ArgumentException("Iteration count must be at least 1", nameof(iterationCount));
 
-        return new ChatHistory(question, answer, iterationCount, recommendedProducts);
+        return new ChatHistory(question, answer, iterationCount, recommendedProducts, iterationsJson);
     }
 }

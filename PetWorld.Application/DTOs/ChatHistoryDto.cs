@@ -8,4 +8,5 @@ public class ChatHistoryDto
     public string Answer { get; set; } = string.Empty;
     public int IterationCount { get; set; }
     public string? RecommendedProducts { get; set; }
+    public List<IterationDetail> Iterations { get; set; } = new();
 }

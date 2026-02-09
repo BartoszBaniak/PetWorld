@@ -27,14 +27,17 @@
                 <h3>Witaj w PetWorld!</h3>
                 <p>Jestem Twoim asystentem AI. Pomogę Ci znaleźć idealne produkty dla Twojego pupila.</p>
                 <div class="suggestions">
-                    <button class="suggestion-chip" @onclick='() => SendSuggestion("Jaka karma dla dorosłego psa?")'>
-                        🐕 Karma dla psa
+                    <button class="suggestion-chip" @onclick='() => SendSuggestion("Pokaż produkty dla psa")'>
+                        🐕 Produkty dla psa
                     </button>
-                    <button class="suggestion-chip" @onclick='() => SendSuggestion("Potrzebuję zabawki dla kota")'>
-                        🐈 Zabawki dla kota
+                    <button class="suggestion-chip" @onclick='() => SendSuggestion("Pokaż produkty dla kota")'>
+                        🐈 Produkty dla kota
                     </button>
-                    <button class="suggestion-chip" @onclick='() => SendSuggestion("Akcesoria do akwarium")'>
-                        🐠 Akwarystyka
+                    <button class="suggestion-chip" @onclick='() => SendSuggestion("Pokaż produkty dla ryb")'>
+                        🐠 Produkty dla ryb
+                    </button>
+                    <button class="suggestion-chip" @onclick='() => SendSuggestion("Pokaż produkty dla gryzoni")'>
+                        🐹 Produkty dla gryzoni
                     </button>
                 </div>
             </div>
@@ -189,7 +192,8 @@
                 Question = question,
                 Answer = response.FinalAnswer,
                 IterationCount = response.IterationCount,
-                RecommendedProducts = string.Join(", ", response.RecommendedProducts)
+                RecommendedProducts = string.Join(", ", response.RecommendedProducts),
+                Iterations = response.Iterations
             };
 
             await ChatHistoryService.SaveChatHistoryAsync(chatHistoryDto);

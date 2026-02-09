@@ -38,6 +38,7 @@ public class PetWorldDbContext : DbContext
             entity.Property(e => e.Answer).IsRequired().HasColumnType("TEXT");
             entity.Property(e => e.IterationCount).IsRequired();
             entity.Property(e => e.RecommendedProducts).HasColumnType("TEXT");
+            entity.Property(e => e.IterationsJson).HasColumnType("LONGTEXT");
         });
     }
 }
