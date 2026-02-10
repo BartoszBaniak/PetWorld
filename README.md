@@ -7,16 +7,24 @@ PetWorld jest sklepem internetowym oferującym produkty dla zwierząt. Klienci m
 Projekt wykorzystuje **Onion Architecture** z następującymi warstwami:
 - **PetWorld.Domain** - Encje domenowe, interfejsy
 - **PetWorld.Application** - Logika biznesowa, serwisy, DTOs
-- **PetWorld.Infrastructure** - Dostęp do danych, implementacje repozytoriów
+- **PetWorld.Infrastructure** - Dostęp do danych, implementacje repozytoriów, agenci AI
 - **PetWorld** (Blazor Server) - Warstwa prezentacji
 
 ## System Writer-Critic AI
 
-Aplikacja wykorzystuje [Microsoft Agent Framework](https://github.com/microsoft/agent-framework) do implementacji systemu Writer-Critic:
+Aplikacja wykorzystuje wzorzec Writer-Critic oparty na Microsoft.Extensions.AI:
 
-- **Writer Agent** - Generuje odpowiedzi dla klientów i rekomenduje produkty
-- **Critic Agent** - Ocenia jakość odpowiedzi (approved: true/false + feedback)
-- **Maksymalnie 3 iteracje** - System może poprawiać odpowiedź do 3 razy
+- **Writer Agent** - Generuje odpowiedzi dla klientów, korzysta z narzędzi (tools) do wyszukiwania produktów w katalogu i rekomenduje produkty
+- **Critic Agent** - Ocenia jakość odpowiedzi pod kątem konkretności, trafności rekomendacji, praktycznych porad i struktury. Zwraca JSON z decyzją (approved/rejected) oraz szczegółowym feedbackiem
+- **Maksymalnie 3 iteracje** - Writer poprawia odpowiedź na podstawie feedbacku od Critica, aż odpowiedź zostanie zaakceptowana lub wyczerpie się limit iteracji
+
+### Narzędzia Writer Agenta
+
+Writer Agent ma dostęp do następujących narzędzi:
+- `SearchProducts` - Wyszukiwanie produktów po słowie kluczowym
+- `GetProductsByPetType` - Pobieranie produktów dla typu zwierzęcia (Pies, Kot, Ryby, Gryzoń)
+- `GetProductsByCategory` - Pobieranie produktów z kategorii (Karma, Zabawki, Akcesoria, Akwarystyka, Klatki i transportery)
+- `GetAllProducts` - Pobieranie wszystkich produktów
 
 ## Technologie
 
@@ -24,7 +32,7 @@ Aplikacja wykorzystuje [Microsoft Agent Framework](https://github.com/microsoft/
 - **Blazor Server** - UI
 - **MySQL** - Baza danych
 - **Entity Framework Core** - ORM
-- **Microsoft Agent Framework** - System agentów AI
+- **Microsoft.Extensions.AI** - Abstrakcja klientów AI
 - **OpenAI GPT-4o** - Model AI
 - **Docker & Docker Compose** - Konteneryzacja
 
@@ -76,19 +84,16 @@ Aplikacja będzie dostępna pod adresem: **http://localhost:5000**
 
 ## Strony
 
-1. **Czat** (`/chat`) - Czat z klientem
-   - Pole tekstowe do wpisania pytania
-   - Przycisk "Wyślij"
-   - Wyświetlanie odpowiedzi + liczby iteracji Writer-Critic
+1. **Czat** (`/chat`, `/`) - Czat z asystentem AI
+   - Sugestie szybkich pytań (produkty dla psa, kota, ryb)
+   - Wyświetlanie odpowiedzi z liczbą iteracji Writer-Critic
+   - Automatyczny zapis do historii
 
-2. **Historia** (`/history`) - Historia czatów
-   - DataGrid z listą pytań i odpowiedzi
-   - Kolumny: Data, Pytanie, Odpowiedź, Liczba iteracji, Polecane produkty
-
-3. **System AI** (`/systemai`) - Informacje o systemie Writer-Critic
-   - Opis Writer Agent
-   - Opis Critic Agent
-   - Przepływ pracy systemu
+2. **Historia** (`/history`) - Historia rozmów
+   - Karty z pytaniami i odpowiedziami
+   - Rozwijane szczegóły iteracji Writer-Critic (odpowiedź Writera + ocena Critica)
+   - Polecane produkty
+   - Statystyki (liczba rozmów, średnia iteracji)
 
 ## Struktura bazy danych
 
@@ -96,7 +101,7 @@ Aplikacja będzie dostępna pod adresem: **http://localhost:5000**
 - Id, Name, Description, Category, Price, PetType, Brand, InStock, StockQuantity, ImageUrl, Tags
 
 ### ChatHistories
-- Id, Data, Pytanie, Odpowiedz, LiczbaIteracji, RecommendedProducts
+- Id, Timestamp, Question, Answer, IterationCount, RecommendedProducts, IterationsJson
 
 ## Dodawanie produktów do katalogu
 
