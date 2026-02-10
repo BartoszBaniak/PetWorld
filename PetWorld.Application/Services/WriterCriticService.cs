@@ -166,7 +166,7 @@ public class WriterCriticService : IWriterCriticService
             if (jsonStart >= 0 && jsonEnd > jsonStart)
             {
                 var jsonText = criticResponseText.Substring(jsonStart, jsonEnd - jsonStart);
-                var criticEvaluation = JsonSerializer.Deserialize<CriticEvaluation>(jsonText);
+                var criticEvaluation = JsonSerializer.Deserialize<CriticEvaluation>(jsonText, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 return (criticEvaluation?.Approved ?? false, criticEvaluation?.Feedback ?? string.Empty);
             }
         }
