@@ -1,4 +1,4 @@
-using Microsoft.Extensions.AI;
+using Microsoft.Agents.AI;
 using PetWorld.Application.DTOs;
 using PetWorld.Application.Interfaces;
 using System.Text.Json;
@@ -7,18 +7,19 @@ namespace PetWorld.Application.Services;
 
 public class WriterCriticService : IWriterCriticService
 {
-    private readonly IWriterAgentFactory _agentFactory;
-    private readonly IChatClient _writerAgent;
-    private readonly IChatClient _criticAgent;
-    private readonly IList<AITool> _productTools;
+    private readonly ChatClientAgent _writerAgent;
+    private readonly ChatClientAgent _criticAgent;
     private const int MaxIterations = 3;
+
+    private static readonly JsonSerializerOptions CaseInsensitiveJson = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
 
     public WriterCriticService(IWriterAgentFactory agentFactory)
     {
-        _agentFactory = agentFactory;
         _writerAgent = agentFactory.CreateWriterAgent();
         _criticAgent = agentFactory.CreateCriticAgent();
-        _productTools = agentFactory.CreateProductTools();
     }
 
     public async Task<WriterCriticResponse> ProcessQuestionAsync(string question)
@@ -36,8 +37,8 @@ public class WriterCriticService : IWriterCriticService
         {
             iterationCount++;
 
-            // Writer Agent generates response using tools
-            writerResponse = await RunWriterWithToolsAsync(question, criticFeedback);
+            // Writer Agent generates response (tool calls handled automatically by the framework)
+            writerResponse = await RunWriterAgentAsync(question, criticFeedback);
 
             // Critic Agent evaluates response
             var criticResult = await RunCriticAgentAsync(question, writerResponse);
@@ -66,98 +67,22 @@ public class WriterCriticService : IWriterCriticService
         return response;
     }
 
-    private async Task<string> RunWriterWithToolsAsync(string question, string previousFeedback)
+    private async Task<string> RunWriterAgentAsync(string question, string previousFeedback)
     {
         var userMessage = string.IsNullOrEmpty(previousFeedback)
             ? question
             : $"{question}\n\n[UWAGA: Poprzednia odpowiedź została odrzucona z powodu: {previousFeedback}. Popraw swoją odpowiedź.]";
 
-        var messages = new List<ChatMessage>
-        {
-            new(ChatRole.User, userMessage)
-        };
-
-        var options = new ChatOptions
-        {
-            Tools = _productTools
-        };
-
-        // Loop to handle tool calls
-        const int maxToolCalls = 5;
-        int toolCallCount = 0;
-
-        while (toolCallCount < maxToolCalls)
-        {
-            var chatResponse = await _writerAgent.GetResponseAsync(messages, options);
-
-            // Check if there are tool calls in the response messages
-            var toolCalls = chatResponse.Messages
-                .SelectMany(m => m.Contents)
-                .OfType<FunctionCallContent>()
-                .ToList();
-
-            if (!toolCalls.Any())
-            {
-                // No tool calls, return the response
-                return chatResponse.Text ?? string.Empty;
-            }
-
-            // Add assistant messages with tool calls
-            foreach (var msg in chatResponse.Messages)
-            {
-                messages.Add(msg);
-            }
-
-            // Execute tool calls and add results
-            foreach (var toolCall in toolCalls)
-            {
-                var result = await ExecuteToolAsync(toolCall);
-                messages.Add(new ChatMessage(ChatRole.Tool, [
-                    new FunctionResultContent(toolCall.CallId, result)
-                ]));
-            }
-
-            toolCallCount++;
-        }
-
-        // If we've exceeded max tool calls, get final response
-        var finalResponse = await _writerAgent.GetResponseAsync(messages, options);
-        return finalResponse.Text ?? string.Empty;
-    }
-
-    private async Task<string> ExecuteToolAsync(FunctionCallContent toolCall)
-    {
-        var tool = _productTools.OfType<AIFunction>().FirstOrDefault(t => t.Name == toolCall.Name);
-        if (tool == null)
-        {
-            return $"Nieznane narzędzie: {toolCall.Name}";
-        }
-
-        try
-        {
-            var args = toolCall.Arguments != null
-                ? new AIFunctionArguments(toolCall.Arguments)
-                : null;
-            var result = await tool.InvokeAsync(args);
-            return result?.ToString() ?? "Brak wyników";
-        }
-        catch (Exception ex)
-        {
-            return $"Błąd podczas wykonywania narzędzia: {ex.Message}";
-        }
+        var result = await _writerAgent.RunAsync(userMessage);
+        return result.Text ?? string.Empty;
     }
 
     private async Task<(bool approved, string feedback)> RunCriticAgentAsync(string question, string writerResponse)
     {
         var userMessage = $"Pytanie klienta: {question}\n\nOdpowiedź do oceny:\n{writerResponse}";
 
-        var messages = new List<ChatMessage>
-        {
-            new(ChatRole.User, userMessage)
-        };
-
-        var response = await _criticAgent.GetResponseAsync(messages);
-        var criticResponseText = response.Text ?? "{}";
+        var criticResult = await _criticAgent.RunAsync(userMessage);
+        var criticResponseText = criticResult.Text ?? "{}";
 
         try
         {
@@ -166,7 +91,7 @@ public class WriterCriticService : IWriterCriticService
             if (jsonStart >= 0 && jsonEnd > jsonStart)
             {
                 var jsonText = criticResponseText.Substring(jsonStart, jsonEnd - jsonStart);
-                var criticEvaluation = JsonSerializer.Deserialize<CriticEvaluation>(jsonText, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var criticEvaluation = JsonSerializer.Deserialize<CriticEvaluation>(jsonText, CaseInsensitiveJson);
                 return (criticEvaluation?.Approved ?? false, criticEvaluation?.Feedback ?? string.Empty);
             }
         }

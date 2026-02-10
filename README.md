@@ -12,7 +12,7 @@ Projekt wykorzystuje **Onion Architecture** z następującymi warstwami:
 
 ## System Writer-Critic AI
 
-Aplikacja wykorzystuje wzorzec Writer-Critic oparty na Microsoft.Extensions.AI:
+Aplikacja wykorzystuje wzorzec Writer-Critic oparty na Microsoft Agent Framework i Microsoft.Extensions.AI:
 
 - **Writer Agent** - Generuje odpowiedzi dla klientów, korzysta z narzędzi (tools) do wyszukiwania produktów w katalogu i rekomenduje produkty
 - **Critic Agent** - Ocenia jakość odpowiedzi pod kątem konkretności, trafności rekomendacji, praktycznych porad i struktury. Zwraca JSON z decyzją (approved/rejected) oraz szczegółowym feedbackiem
@@ -92,10 +92,8 @@ Aplikacja będzie dostępna pod adresem: **http://localhost:5000**
    - Automatyczny zapis do historii
 
 2. **Historia** (`/history`) - Historia rozmów
-   - Karty z pytaniami i odpowiedziami
-   - Rozwijane szczegóły iteracji Writer-Critic (odpowiedź Writera + ocena Critica)
-   - Polecane produkty
-   - Statystyki (liczba rozmów, średnia iteracji)
+   - DataGrid (QuickGrid) z kolumnami: Data, Pytanie, Odpowiedź, Liczba iteracji
+   - Sortowanie po dacie i liczbie iteracji
 
 ## Struktura bazy danych
 

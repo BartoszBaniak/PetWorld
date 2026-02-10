@@ -214,5 +214,8 @@ C:\c#\PetWorld\PetWorld\obj\Debug\net10.0\PetWorld.sourcelink.json
 C:\c#\PetWorld\PetWorld\bin\Debug\net10.0\Microsoft.Agents.AI.Workflows.dll
 C:\c#\PetWorld\PetWorld\bin\Debug\net10.0\OpenTelemetry.Api.dll
 C:\c#\PetWorld\PetWorld\obj\Debug\net10.0\compressed\4nq7qufc7t-{0}-7m81ehy9wb-7m81ehy9wb.gz
-C:\c#\PetWorld\PetWorld\obj\Debug\net10.0\compressed\o5ck1ycbwy-{0}-fssmcn8jxv-fssmcn8jxv.gz
 C:\c#\PetWorld\PetWorld\obj\Debug\net10.0\compressed\jwxcwfrc8w-{0}-fssmcn8jxv-fssmcn8jxv.gz
+C:\c#\PetWorld\PetWorld\bin\Debug\net10.0\Microsoft.AspNetCore.Components.QuickGrid.dll
+C:\c#\PetWorld\PetWorld\obj\Debug\net10.0\compressed\unlu0xluo6-{0}-eu7w3d5g1a-eu7w3d5g1a.gz
+C:\c#\PetWorld\PetWorld\obj\Debug\net10.0\compressed\1x45lb54o8-{0}-boiwgh0w5b-boiwgh0w5b.gz
+C:\c#\PetWorld\PetWorld\obj\Debug\net10.0\compressed\o5ck1ycbwy-{0}-jby3o3m334-jby3o3m334.gz

@@ -1,3 +1,4 @@
+using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using PetWorld.Application.DTOs;
 using PetWorld.Application.Interfaces;
@@ -57,17 +58,28 @@ WAŻNE: Odpowiedz TYLKO w formacie JSON, bez dodatkowego tekstu.";
         _productService = productService;
     }
 
-    public IChatClient CreateWriterAgent()
+    public ChatClientAgent CreateWriterAgent()
     {
-        return new SystemPromptChatClient(_baseChatClient, WriterSystemPrompt);
+        var tools = CreateProductTools();
+
+        return new ChatClientAgent(
+            _baseChatClient,
+            name: "WriterAgent",
+            description: "Asystent sklepu PetWorld generujący odpowiedzi dla klientów",
+            instructions: WriterSystemPrompt,
+            tools: tools);
     }
 
-    public IChatClient CreateCriticAgent()
+    public ChatClientAgent CreateCriticAgent()
     {
-        return new SystemPromptChatClient(_baseChatClient, CriticSystemPrompt);
+        return new ChatClientAgent(
+            _baseChatClient,
+            name: "CriticAgent",
+            description: "Krytyk oceniający jakość odpowiedzi",
+            instructions: CriticSystemPrompt);
     }
 
-    public IList<AITool> CreateProductTools()
+    private IList<AITool> CreateProductTools()
     {
         return new List<AITool>
         {
@@ -122,50 +134,5 @@ WAŻNE: Odpowiedz TYLKO w formacie JSON, bez dodatkowego tekstu.";
             (p.InStock ? $" (dostępne: {p.StockQuantity} szt.)" : " (niedostępne)"));
 
         return string.Join("\n", formatted);
-    }
-}
-
-/// <summary>
-/// A chat client wrapper that prepends a system prompt to all messages.
-/// </summary>
-internal class SystemPromptChatClient : DelegatingChatClient
-{
-    private readonly string _systemPrompt;
-
-    public SystemPromptChatClient(IChatClient innerClient, string systemPrompt)
-        : base(innerClient)
-    {
-        _systemPrompt = systemPrompt;
-    }
-
-    public override Task<ChatResponse> GetResponseAsync(
-        IEnumerable<ChatMessage> messages,
-        ChatOptions? options = null,
-        CancellationToken cancellationToken = default)
-    {
-        var messagesWithSystem = PrependSystemPrompt(messages);
-        return base.GetResponseAsync(messagesWithSystem, options, cancellationToken);
-    }
-
-    public override IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(
-        IEnumerable<ChatMessage> messages,
-        ChatOptions? options = null,
-        CancellationToken cancellationToken = default)
-    {
-        var messagesWithSystem = PrependSystemPrompt(messages);
-        return base.GetStreamingResponseAsync(messagesWithSystem, options, cancellationToken);
-    }
-
-    private List<ChatMessage> PrependSystemPrompt(IEnumerable<ChatMessage> messages)
-    {
-        var messageList = messages.ToList();
-
-        // Only add system prompt if not already present
-        if (!messageList.Any(m => m.Role == ChatRole.System))
-        {
-            messageList.Insert(0, new ChatMessage(ChatRole.System, _systemPrompt));
-        }
-
-        return messageList;
     }
 }

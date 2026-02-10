@@ -1,10 +1,9 @@
-using Microsoft.Extensions.AI;
+using Microsoft.Agents.AI;
 
 namespace PetWorld.Application.Interfaces;
 
 public interface IWriterAgentFactory
 {
-    IChatClient CreateWriterAgent();
-    IChatClient CreateCriticAgent();
-    IList<AITool> CreateProductTools();
+    ChatClientAgent CreateWriterAgent();
+    ChatClientAgent CreateCriticAgent();
 }

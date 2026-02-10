@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "5TUewSBx04k=",
+  "dgSpecHash": "t9pYY3+mpTM=",
   "success": true,
   "projectFilePath": "C:\\c#\\PetWorld\\PetWorld\\PetWorld.csproj",
   "expectedPackageFiles": [
@@ -19,6 +19,7 @@
     "C:\\Users\\Bartosz\\.nuget\\packages\\microsoft.agents.ai.openai\\1.0.0-preview.260128.1\\microsoft.agents.ai.openai.1.0.0-preview.260128.1.nupkg.sha512",
     "C:\\Users\\Bartosz\\.nuget\\packages\\microsoft.agents.ai.workflows\\1.0.0-preview.260128.1\\microsoft.agents.ai.workflows.1.0.0-preview.260128.1.nupkg.sha512",
     "C:\\Users\\Bartosz\\.nuget\\packages\\microsoft.aspnetcore.app.internal.assets\\10.0.2\\microsoft.aspnetcore.app.internal.assets.10.0.2.nupkg.sha512",
+    "C:\\Users\\Bartosz\\.nuget\\packages\\microsoft.aspnetcore.components.quickgrid\\10.0.3\\microsoft.aspnetcore.components.quickgrid.10.0.3.nupkg.sha512",
     "C:\\Users\\Bartosz\\.nuget\\packages\\microsoft.build.framework\\18.0.2\\microsoft.build.framework.18.0.2.nupkg.sha512",
     "C:\\Users\\Bartosz\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\3.11.0\\microsoft.codeanalysis.analyzers.3.11.0.nupkg.sha512",
     "C:\\Users\\Bartosz\\.nuget\\packages\\microsoft.codeanalysis.common\\5.0.0\\microsoft.codeanalysis.common.5.0.0.nupkg.sha512",
