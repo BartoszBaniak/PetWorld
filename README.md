@@ -30,16 +30,16 @@ Writer Agent ma dostęp do następujących narzędzi:
 
 - **.NET 10.0**
 - **Blazor Server** - UI
-- **MySQL** - Baza danych
+- **MySQL 8.0** - Baza danych
 - **Entity Framework Core** - ORM
 - **Microsoft.Extensions.AI** - Abstrakcja klientów AI
-- **OpenAI GPT-4o** - Model AI
+- **Google Gemini 2.5 Flash Lite** - Model AI
 - **Docker & Docker Compose** - Konteneryzacja
 
 ## Wymagania
 
 - Docker i Docker Compose
-- Klucz API OpenAI lub Azure OpenAI
+- Klucz API Google Gemini
 
 ## Instalacja i Uruchomienie
 
@@ -50,7 +50,7 @@ git clone <repository-url>
 cd PetWorld
 ```
 
-### 2. Skonfiguruj klucz API OpenAI
+### 2. Skonfiguruj klucz API Gemini
 
 Skopiuj plik `.env.example` do `.env` i uzupełnij klucz API:
 
@@ -60,14 +60,16 @@ cp .env.example .env
 
 Edytuj plik `.env`:
 ```
-OPENAI_API_KEY=your-actual-openai-api-key
+GEMINI_API_KEY=your-gemini-api-key-here
 ```
+
+Klucz API można uzyskać na: https://aistudio.google.com/apikey
 
 Alternatywnie, możesz skonfigurować klucz w `PetWorld/appsettings.json`:
 ```json
 {
-  "OpenAI": {
-    "ApiKey": "your-actual-openai-api-key"
+  "Gemini": {
+    "ApiKey": "your-gemini-api-key-here"
   }
 }
 ```
