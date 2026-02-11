@@ -74,7 +74,17 @@ public class WriterCriticService : IWriterCriticService
             : $"{question}\n\n[UWAGA: Poprzednia odpowiedź została odrzucona z powodu: {previousFeedback}. Popraw swoją odpowiedź.]";
 
         var result = await _writerAgent.RunAsync(userMessage);
-        return result.Text ?? string.Empty;
+        return ExtractLastAssistantMessage(result);
+    }
+
+    private static string ExtractLastAssistantMessage(AgentResponse response)
+    {
+        // AgentResponse.Text concatenates ALL messages (including pre-tool-call text).
+        // We only want the last assistant message which contains the final answer.
+        var lastAssistantMessage = response.Messages?
+            .LastOrDefault(m => m.Role.Value == "assistant" && !string.IsNullOrWhiteSpace(m.Text));
+
+        return lastAssistantMessage?.Text ?? response.Text ?? string.Empty;
     }
 
     private async Task<(bool approved, string feedback)> RunCriticAgentAsync(string question, string writerResponse)

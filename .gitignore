@@ -1,2 +1,6 @@
-/.env
+.env
 nul
+
+# Build output
+bin/
+obj/
